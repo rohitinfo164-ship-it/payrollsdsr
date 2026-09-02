@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>EPFO & ESIC Pro – Neelkanth Biotech</title>
+<title>Payroll Solutions – Neelkanth Biotech</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -122,30 +122,75 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .tr{text-align:right}.tc{text-align:center}
 /* INFO BOX */
 .ib{background:var(--info);border:1px solid #bfdbfe;border-radius:5px;padding:9px 14px;font-size:.78rem;color:var(--t2);margin-bottom:14px}
-/* AUTH SCREEN */
+/* AUTH SCREEN — split layout */
 body.not-authed .sb,body.not-authed .sb-ov,body.not-authed .mc{display:none!important}
 body.authed #auth-screen{display:none!important}
-#auth-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#1e293b);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
-.auth-card{background:var(--card);width:100%;max-width:400px;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.4);overflow:hidden}
-.auth-hd{padding:26px 28px 18px;text-align:center;border-bottom:1px solid var(--bd)}
-.auth-hd .ai{font-size:2rem;margin-bottom:6px}
-.auth-hd h1{font-size:1.15rem;font-weight:800;color:var(--t1)}
-.auth-hd p{font-size:.75rem;color:var(--t2);margin-top:3px}
-.auth-tabs{display:flex;border-bottom:1px solid var(--bd)}
-.auth-tab{flex:1;text-align:center;padding:12px;font-size:.82rem;font-weight:700;color:var(--t2);cursor:pointer;border-bottom:2.5px solid transparent}
-.auth-tab.act{color:var(--bl);border-bottom-color:var(--bl)}
-.auth-body{padding:22px 28px 26px}
-.auth-fld{margin-bottom:13px}
-.auth-fld label{display:block;font-size:.72rem;font-weight:700;color:var(--t2);margin-bottom:5px}
-.auth-fld input{width:100%;padding:9px 11px;border:1.5px solid var(--bi);border-radius:6px;background:var(--inp);color:var(--t1);font-size:.85rem}
-.auth-fld input:focus{outline:none;border-color:var(--bl)}
-.auth-btn{width:100%;padding:11px;border-radius:7px;border:none;background:var(--bl);color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:6px}
-.auth-btn:hover{background:#2563eb}
-.auth-btn:disabled{opacity:.6;cursor:not-allowed}
-.auth-msg{font-size:.74rem;padding:8px 11px;border-radius:6px;margin-bottom:12px;display:none}
+#auth-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:stretch;justify-content:center;overflow-y:auto}
+.auth-shell{width:100%;max-width:1200px;margin:auto;display:flex;min-height:100vh;box-shadow:0 30px 80px rgba(0,0,0,.25)}
+/* LEFT BRAND PANEL */
+.auth-brand{flex:1.1;background:linear-gradient(160deg,#0b1120 0%,#132348 45%,#1e3a8a 100%);position:relative;overflow:hidden;padding:44px 46px;display:flex;flex-direction:column;color:#fff;min-width:0}
+.auth-brand::before{content:"";position:absolute;top:-80px;right:-80px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.25),transparent 70%)}
+.auth-brand::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:22px 22px;opacity:.5;pointer-events:none}
+.auth-brand-top{display:flex;align-items:center;gap:12px;position:relative;z-index:1}
+.auth-brand-logo{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.auth-brand-logo svg{width:26px;height:26px}
+.auth-brand-word{font-size:1.3rem;font-weight:800;line-height:1.15}
+.auth-brand-word span{color:#60a5fa}
+.auth-brand-tag{font-size:.72rem;color:#93a5c9;margin-top:1px}
+.auth-brand-headline{font-size:1.9rem;font-weight:800;line-height:1.25;margin-top:38px;position:relative;z-index:1}
+.auth-brand-headline em{font-style:normal;color:#60a5fa}
+.auth-brand-sub{font-size:.85rem;color:#a9b8d8;margin-top:12px;max-width:400px;line-height:1.6;position:relative;z-index:1}
+.auth-feat-list{margin-top:30px;display:flex;flex-direction:column;gap:14px;position:relative;z-index:1}
+.auth-feat{display:flex;align-items:center;gap:13px}
+.auth-feat-ic{width:38px;height:38px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+.auth-feat-ic svg{width:19px;height:19px}
+.auth-feat-tt{font-size:.83rem;font-weight:700;color:#fff}
+.auth-feat-sb{font-size:.71rem;color:#93a5c9;margin-top:1px}
+.auth-brand-mock{margin-top:28px;flex:1;display:flex;align-items:flex-end;justify-content:center;position:relative;z-index:1;min-height:120px}
+.auth-mock-card{width:100%;max-width:360px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px 12px 0 0;padding:14px 16px;backdrop-filter:blur(6px)}
+.auth-mock-row{display:flex;gap:8px;margin-bottom:8px}
+.auth-mock-kpi{flex:1;background:rgba(255,255,255,.08);border-radius:7px;padding:8px 10px}
+.auth-mock-kpi b{display:block;font-size:.85rem;color:#fff;font-weight:800}
+.auth-mock-kpi span{font-size:.6rem;color:#93a5c9}
+.auth-mock-bars{display:flex;align-items:flex-end;gap:4px;height:32px;margin-top:6px}
+.auth-mock-bars i{flex:1;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:2px;display:block}
+.auth-brand-foot{margin-top:20px;font-size:.68rem;color:#8296bc;position:relative;z-index:1;display:flex;align-items:center;gap:6px}
+/* RIGHT FORM PANEL */
+.auth-formside{flex:1;background:var(--card);display:flex;flex-direction:column;padding:36px 48px;min-width:0;position:relative}
+@media (max-width:900px){.auth-brand{display:none}.auth-shell{min-height:100vh}.auth-formside{padding:32px 22px;min-height:100vh;justify-content:center}}
+.auth-theme-tog{position:absolute;top:24px;right:28px;display:flex;align-items:center;gap:8px;background:var(--alt);border:1px solid var(--bd);border-radius:20px;padding:4px 10px;cursor:pointer;user-select:none}
+.auth-theme-tog svg{width:15px;height:15px;color:var(--tm)}
+.auth-theme-sw{width:32px;height:17px;border-radius:20px;background:var(--bi);position:relative;transition:background .2s}
+.auth-theme-sw i{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+[data-theme=dark] .auth-theme-sw{background:var(--bl)}
+[data-theme=dark] .auth-theme-sw i{transform:translateX(15px)}
+.auth-formwrap{max-width:380px;margin:auto;width:100%}
+.auth-avatar{width:64px;height:64px;border-radius:50%;background:var(--info);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.auth-avatar svg{width:32px;height:32px;color:var(--bl)}
+.auth-formhd{text-align:center;margin-bottom:26px}
+.auth-formhd h1{font-size:1.35rem;font-weight:800;color:var(--t1)}
+.auth-formhd p{font-size:.8rem;color:var(--t2);margin-top:4px}
+.auth-fld{margin-bottom:15px}
+.auth-fld label{display:block;font-size:.74rem;font-weight:700;color:var(--t2);margin-bottom:6px}
+.auth-inpw{position:relative;display:flex;align-items:center}
+.auth-inpw svg.auth-ic-l{position:absolute;left:12px;width:16px;height:16px;color:var(--tm);pointer-events:none}
+.auth-inpw input{width:100%;padding:10px 12px 10px 38px;border:1.5px solid var(--bi);border-radius:8px;background:var(--inp);color:var(--t1);font-size:.85rem}
+.auth-inpw input:focus{outline:none;border-color:var(--bl)}
+.auth-eye{position:absolute;right:12px;cursor:pointer;color:var(--tm);display:flex;padding:2px}
+.auth-eye svg{width:17px;height:17px}
+.auth-row-between{display:flex;align-items:center;justify-content:space-between;margin:2px 0 18px;font-size:.76rem}
+.auth-remember{display:flex;align-items:center;gap:7px;color:var(--t2);cursor:pointer;user-select:none}
+.auth-remember input{width:14px;height:14px;accent-color:var(--bl)}
+.auth-fp2{color:var(--bl);cursor:pointer;font-weight:600}
+.auth-btn2{width:100%;padding:12px;border-radius:8px;border:none;background:linear-gradient(90deg,#1e3a8a,#3b82f6);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
+.auth-btn2:hover{opacity:.92}
+.auth-btn2:disabled{opacity:.6;cursor:not-allowed}
+.auth-btn2 svg{width:16px;height:16px}
+.auth-switch{text-align:center;font-size:.8rem;color:var(--t2);margin-top:22px}
+.auth-switch b{color:var(--bl);cursor:pointer;font-weight:700}
+.auth-msg{font-size:.76rem;padding:9px 12px;border-radius:7px;margin-bottom:14px;display:none}
 .auth-msg.err{display:block;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
 .auth-msg.ok{display:block;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
-.auth-fp{text-align:center;font-size:.72rem;color:var(--bl);margin-top:12px;cursor:pointer}
 .auth-pane{display:none}.auth-pane.act{display:block}
 .acct-chip{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:.76rem;color:var(--t2)}
 .acct-chip b{color:var(--t1)}
@@ -323,34 +368,137 @@ body.authed #auth-screen{display:none!important}
 
 <!-- AUTH SCREEN -->
 <div id="auth-screen">
-  <div class="auth-card">
-    <div class="auth-hd">
-      <div class="ai">⚖️</div>
-      <h1>EPFO & ESIC Pro</h1>
-      <p>Payroll & Compliance Suite — apni company ka account banayein ya login karein</p>
-    </div>
-    <div class="auth-tabs">
-      <div class="auth-tab act" id="tab-login" onclick="switchAuthTab('login')">Login</div>
-      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">New Registration</div>
-    </div>
-    <div class="auth-body">
-      <div class="auth-msg" id="auth-msg"></div>
-
-      <!-- LOGIN -->
-      <div class="auth-pane act" id="pane-login">
-        <div class="auth-fld"><label>Email</label><input type="email" id="li-email" placeholder="aapka@email.com" autocomplete="username"/></div>
-        <div class="auth-fld"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••" autocomplete="current-password"/></div>
-        <button class="auth-btn" id="li-btn" onclick="handleLogin()">Login</button>
-        <div class="auth-fp" onclick="handleForgotPassword()">Password bhool gaye?</div>
+  <div class="auth-shell">
+    <!-- LEFT BRAND PANEL -->
+    <div class="auth-brand">
+      <div class="auth-brand-top">
+        <div class="auth-brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="7" r="3" fill="#93c5fd"/><path d="M5 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1" stroke="#93c5fd" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="9" r="2.2" fill="#60a5fa"/><circle cx="18" cy="9" r="2.2" fill="#60a5fa"/></svg>
+        </div>
+        <div>
+          <div class="auth-brand-word">Payroll <span>Solutions</span></div>
+          <div class="auth-brand-tag">Smart Payroll. Seamless Management.</div>
+        </div>
       </div>
+      <div class="auth-brand-headline">Simplify Payroll.<br/>Empower <em>People.</em></div>
+      <p class="auth-brand-sub">Manage your employees, attendance, salary, EPFO/ESIC compliance and more — all in one powerful platform.</p>
+      <div class="auth-feat-list">
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.2" stroke="#1e3a8a" stroke-width="1.8"/><path d="M5 20v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1" stroke="#1e3a8a" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div><div class="auth-feat-tt">Employee Management</div><div class="auth-feat-sb">Centralize employee data in one place</div></div>
+        </div>
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="3" width="14" height="18" rx="2" stroke="#1e3a8a" stroke-width="1.8"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#1e3a8a" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+          <div><div class="auth-feat-tt">Payroll Processing</div><div class="auth-feat-sb">Accurate salary processing made easy</div></div>
+        </div>
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="#1e3a8a" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="#1e3a8a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="auth-feat-tt">EPFO & ESIC Compliance</div><div class="auth-feat-sb">Stay compliant with latest regulations</div></div>
+        </div>
+        <div class="auth-feat">
+          <div class="auth-feat-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2" stroke="#1e3a8a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><div class="auth-feat-tt">Reports & Analytics</div><div class="auth-feat-sb">Make data-driven payroll decisions</div></div>
+        </div>
+      </div>
+      <div class="auth-brand-mock">
+        <div class="auth-mock-card">
+          <div class="auth-mock-row">
+            <div class="auth-mock-kpi"><b id="mock-emp">—</b><span>Employees</span></div>
+            <div class="auth-mock-kpi"><b>26</b><span>Working Days</span></div>
+            <div class="auth-mock-kpi"><b>✓</b><span>Compliant</span></div>
+          </div>
+          <div class="auth-mock-bars"><i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i><i style="height:80%"></i><i style="height:60%"></i><i style="height:90%"></i><i style="height:70%"></i></div>
+        </div>
+      </div>
+      <div class="auth-brand-foot">
+        <svg viewBox="0 0 24 24" fill="none" width="13" height="13"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" stroke="#8296bc" stroke-width="1.8"/></svg>
+        Secure · Reliable · Efficient — Your payroll data is safe with us.
+      </div>
+    </div>
 
-      <!-- REGISTER -->
-      <div class="auth-pane" id="pane-register">
-        <div class="auth-fld"><label>Company / Firm Name</label><input type="text" id="rg-co" placeholder="e.g. Sharma Textiles Pvt Ltd"/></div>
-        <div class="auth-fld"><label>Email</label><input type="email" id="rg-email" placeholder="aapka@email.com" autocomplete="username"/></div>
-        <div class="auth-fld"><label>Password</label><input type="password" id="rg-pass" placeholder="Kam se kam 6 character" autocomplete="new-password"/></div>
-        <div class="auth-fld"><label>Confirm Password</label><input type="password" id="rg-pass2" placeholder="Password dubara likhein" autocomplete="new-password"/></div>
-        <button class="auth-btn" id="rg-btn" onclick="handleRegister()">Account Banayein</button>
+    <!-- RIGHT FORM PANEL -->
+    <div class="auth-formside">
+      <div class="auth-theme-tog" onclick="toggleAuthTheme()" title="Toggle dark mode">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <div class="auth-theme-sw" id="auth-theme-sw"><i></i></div>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="auth-formwrap">
+        <div class="auth-avatar">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M4 21v-1a7 7 0 0 1 7-7h2a7 7 0 0 1 7 7v1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="auth-formhd" id="auth-formhd">
+          <h1 id="auth-title">Welcome Back!</h1>
+          <p id="auth-subtitle">Login to your Payroll Solutions account</p>
+        </div>
+        <div class="auth-msg" id="auth-msg"></div>
+
+        <!-- LOGIN -->
+        <div class="auth-pane act" id="pane-login">
+          <div class="auth-fld">
+            <label>Email Address</label>
+            <div class="auth-inpw">
+              <svg class="auth-ic-l" viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3V6z" stroke="currentColor" stroke-width="1.6"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              <input type="email" id="li-email" placeholder="Enter your email" autocomplete="username"/>
+            </div>
+          </div>
+          <div class="auth-fld">
+            <label>Password</label>
+            <div class="auth-inpw">
+              <svg class="auth-ic-l" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <input type="password" id="li-pass" placeholder="Enter your password" autocomplete="current-password" style="padding-right:38px"/>
+              <span class="auth-eye" onclick="togglePw('li-pass',this)">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="auth-row-between">
+            <label class="auth-remember"><input type="checkbox" id="li-remember"/>Remember me</label>
+            <span class="auth-fp2" onclick="handleForgotPassword()">Forgot Password?</span>
+          </div>
+          <button class="auth-btn2" id="li-btn" onclick="handleLogin()">Login <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="auth-switch">Don't have an account? <b onclick="switchAuthTab('register')">Create one</b></div>
+        </div>
+
+        <!-- REGISTER -->
+        <div class="auth-pane" id="pane-register">
+          <div class="auth-fld">
+            <label>Company / Firm Name</label>
+            <div class="auth-inpw">
+              <svg class="auth-ic-l" viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="18" rx="1.5" stroke="currentColor" stroke-width="1.6"/><path d="M8 8h2M8 12h2M8 16h2M14 8h2M14 12h2M14 16h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <input type="text" id="rg-co" placeholder="e.g. Sharma Textiles Pvt Ltd"/>
+            </div>
+          </div>
+          <div class="auth-fld">
+            <label>Email Address</label>
+            <div class="auth-inpw">
+              <svg class="auth-ic-l" viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3V6z" stroke="currentColor" stroke-width="1.6"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              <input type="email" id="rg-email" placeholder="Enter your email" autocomplete="username"/>
+            </div>
+          </div>
+          <div class="auth-fld">
+            <label>Password</label>
+            <div class="auth-inpw">
+              <svg class="auth-ic-l" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <input type="password" id="rg-pass" placeholder="Minimum 6 characters" autocomplete="new-password" style="padding-right:38px"/>
+              <span class="auth-eye" onclick="togglePw('rg-pass',this)">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="auth-fld">
+            <label>Confirm Password</label>
+            <div class="auth-inpw">
+              <svg class="auth-ic-l" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.6"/></svg>
+              <input type="password" id="rg-pass2" placeholder="Re-enter password" autocomplete="new-password" style="padding-right:38px"/>
+              <span class="auth-eye" onclick="togglePw('rg-pass2',this)">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"/></svg>
+              </span>
+            </div>
+          </div>
+          <button class="auth-btn2" id="rg-btn" onclick="handleRegister()" style="margin-top:6px">Create Account <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="auth-switch">Already have an account? <b onclick="switchAuthTab('login')">Sign In</b></div>
+        </div>
       </div>
     </div>
   </div>
@@ -359,10 +507,10 @@ body.authed #auth-screen{display:none!important}
 <!-- SIDEBAR -->
 <aside class="sb" id="sb">
   <div class="sb-logo">
-    <div class="logo-i">⚖️</div>
+    <div class="logo-i">📊</div>
     <div>
-      <span class="logo-t" id="co-short">PayrollPro</span>
-      <span class="logo-s">EPFO & ESIC Suite</span>
+      <span class="logo-t" id="co-short">Payroll Solutions</span>
+      <span class="logo-s">Payroll & Compliance Suite</span>
     </div>
   </div>
   <nav class="sb-nav">
@@ -959,14 +1107,14 @@ try{
   console.error("Firebase init failed:",fbInitErr);
   window.addEventListener("DOMContentLoaded",()=>{
     const m=_id("auth-msg");
-    if(m){m.textContent="Connection error: "+fbInitErr.message+" — Page reload karein ya internet check karein.";m.className="auth-msg err"}
+    if(m){m.textContent="Connection error: "+fbInitErr.message+" — Please reload the page or check your internet connection.";m.className="auth-msg err"}
   });
 }
 window.addEventListener("error",function(ev){
   console.error("Uncaught error:",ev.error||ev.message);
   if(document.body.classList.contains("not-authed")){
     const m=_id("auth-msg");
-    if(m&&m.className.indexOf("err")===-1){m.textContent="Error: "+(ev.message||"Kuch galat ho gaya")+" — F12 dabakar Console tab check karein.";m.className="auth-msg err"}
+    if(m&&m.className.indexOf("err")===-1){m.textContent="Error: "+(ev.message||"Something went wrong")+" — Press F12 and check the Console tab for details.";m.className="auth-msg err"}
   }
 });
 let currentUser=null;
@@ -982,41 +1130,52 @@ function authMsg(text,type){
 }
 function switchAuthTab(which){
   authMsg("");
-  _id("tab-login").classList.toggle("act",which==="login");
-  _id("tab-register").classList.toggle("act",which==="register");
   _id("pane-login").classList.toggle("act",which==="login");
   _id("pane-register").classList.toggle("act",which==="register");
+  if(which==="register"){
+    _id("auth-title").textContent="Create Your Account";
+    _id("auth-subtitle").textContent="Set up your company's Payroll Solutions account";
+  }else{
+    _id("auth-title").textContent="Welcome Back!";
+    _id("auth-subtitle").textContent="Login to your Payroll Solutions account";
+  }
 }
+function togglePw(inputId,iconEl){
+  const inp=_id(inputId);if(!inp)return;
+  inp.type=inp.type==="password"?"text":"password";
+}
+const AUTH_ARROW_SVG='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function setAuthBusy(btnId,busy,label){
   const b=_id(btnId);if(!b)return;
-  b.disabled=busy;b.textContent=busy?"Please wait...":label;
+  b.disabled=busy;
+  b.innerHTML=busy?"Please wait...":(label+" "+AUTH_ARROW_SVG);
 }
 function fbErrMsg(err){
   const c=err&&err.code||"";
   const map={
-    "auth/email-already-in-use":"Ye email pehle se registered hai — Login tab use karein.",
-    "auth/invalid-email":"Email sahi format me nahi hai.",
-    "auth/weak-password":"Password kam se kam 6 character ka hona chahiye.",
-    "auth/user-not-found":"Ye email registered nahi hai. Pehle Registration karein.",
-    "auth/wrong-password":"Password galat hai.",
-    "auth/invalid-credential":"Email ya Password galat hai.",
-    "auth/too-many-requests":"Bahut zyada attempts ho gaye — thodi der baad try karein.",
-    "auth/network-request-failed":"Internet connection check karein."
+    "auth/email-already-in-use":"This email is already registered — please use Sign In instead.",
+    "auth/invalid-email":"Please enter a valid email address.",
+    "auth/weak-password":"Password must be at least 6 characters.",
+    "auth/user-not-found":"No account found with this email. Please create an account first.",
+    "auth/wrong-password":"Incorrect password.",
+    "auth/invalid-credential":"Incorrect email or password.",
+    "auth/too-many-requests":"Too many attempts — please try again in a few minutes.",
+    "auth/network-request-failed":"Please check your internet connection."
   };
-  return map[c]||(err&&err.message)||"Kuch galat ho gaya, dobara try karein.";
+  return map[c]||(err&&err.message)||"Something went wrong. Please try again.";
 }
 function handleRegister(){
-  if(!firebaseReady){authMsg("Firebase load nahi ho paya. Page reload karke dobara try karein.");return}
+  if(!firebaseReady){authMsg("Connection error — please reload the page and try again.");return}
   const coName=(_id("rg-co").value||"").trim();
   const email=(_id("rg-email").value||"").trim();
   const pass=_id("rg-pass").value||"";
   const pass2=_id("rg-pass2").value||"";
   authMsg("");
-  if(!coName){authMsg("Company/Firm ka naam likhein.");return}
-  if(!email){authMsg("Email likhein.");return}
-  if(pass.length<6){authMsg("Password kam se kam 6 character ka hona chahiye.");return}
-  if(pass!==pass2){authMsg("Password match nahi kar raha.");return}
-  setAuthBusy("rg-btn",true,"Account Banayein");
+  if(!coName){authMsg("Please enter your company or firm name.");return}
+  if(!email){authMsg("Please enter your email address.");return}
+  if(pass.length<6){authMsg("Password must be at least 6 characters.");return}
+  if(pass!==pass2){authMsg("Passwords do not match.");return}
+  setAuthBusy("rg-btn",true,"Create Account");
   fbAuth.createUserWithEmailAndPassword(email,pass).then(async cred=>{
     const uid=cred.user.uid;
     const localHasData=ld("pp_e")!==null;
@@ -1035,36 +1194,38 @@ function handleRegister(){
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       updatedAt:firebase.firestore.FieldValue.serverTimestamp()
     });
-    setAuthBusy("rg-btn",false,"Account Banayein");
-    toast("Account ban gaya! Welcome, "+coName);
+    setAuthBusy("rg-btn",false,"Create Account");
+    toast("Account created! Welcome, "+coName);
   }).catch(err=>{
-    setAuthBusy("rg-btn",false,"Account Banayein");
+    setAuthBusy("rg-btn",false,"Create Account");
     authMsg(fbErrMsg(err));
   });
 }
 function handleLogin(){
-  if(!firebaseReady){authMsg("Firebase load nahi ho paya. Page reload karke dobara try karein.");return}
+  if(!firebaseReady){authMsg("Connection error — please reload the page and try again.");return}
   const email=(_id("li-email").value||"").trim();
   const pass=_id("li-pass").value||"";
+  const remember=_id("li-remember")?_id("li-remember").checked:true;
   authMsg("");
-  if(!email||!pass){authMsg("Email aur Password dono bharein.");return}
-  setAuthBusy("li-btn",true,"Login");
-  fbAuth.signInWithEmailAndPassword(email,pass).catch(err=>{
-    setAuthBusy("li-btn",false,"Login");
+  if(!email||!pass){authMsg("Please enter both email and password.");return}
+  setAuthBusy("li-btn",true,"Sign In");
+  const persistence=remember?firebase.auth.Auth.Persistence.LOCAL:firebase.auth.Auth.Persistence.SESSION;
+  fbAuth.setPersistence(persistence).then(()=>fbAuth.signInWithEmailAndPassword(email,pass)).catch(err=>{
+    setAuthBusy("li-btn",false,"Sign In");
     authMsg(fbErrMsg(err));
   });
 }
 function handleForgotPassword(){
-  if(!firebaseReady){authMsg("Firebase load nahi ho paya. Page reload karke dobara try karein.");return}
+  if(!firebaseReady){authMsg("Connection error — please reload the page and try again.");return}
   const email=(_id("li-email").value||"").trim();
-  if(!email){authMsg("Pehle apna email likhein, phir 'Password bhool gaye' dabayein.");return}
+  if(!email){authMsg("Please enter your email first, then click 'Forgot password?'.");return}
   fbAuth.sendPasswordResetEmail(email).then(()=>{
-    authMsg("Password reset link "+email+" par bhej diya gaya hai.","ok");
+    authMsg("Password reset link sent to "+email+".","ok");
   }).catch(err=>authMsg(fbErrMsg(err)));
 }
 function handleLogout(){
-  if(!firebaseReady){toast("Firebase load nahi ho paya.","te");return}
-  if(!confirm("Kya aap logout karna chahte hain?"))return;
+  if(!firebaseReady){toast("Connection error.","te");return}
+  if(!confirm("Are you sure you want to sign out?"))return;
   fbAuth.signOut();
 }
 function cloudSaveDebounced(){
@@ -1313,22 +1474,35 @@ function closeMo(id){_id(id).classList.remove("open")}
 function toast(msg,t="ts"){const el=_id("toast");el.textContent=msg;el.className=`toast show ${t}`;setTimeout(()=>el.className="toast",3200)}
 
 // ── THEME ──
-function toggleTheme(){
-  const h=document.documentElement,dark=h.getAttribute("data-theme")==="dark";
-  h.setAttribute("data-theme",dark?"light":"dark");
-  _id("tic").textContent=dark?"🌙":"☀️";_id("tlb").textContent=dark?"Dark Mode":"Light Mode";
-  sv("pp_th",dark?"light":"dark");
+function applyThemeUI(theme){
+  document.documentElement.setAttribute("data-theme",theme);
+  const tic=_id("tic"),tlb=_id("tlb");
+  if(tic)tic.textContent=theme==="dark"?"☀️":"🌙";
+  if(tlb)tlb.textContent=theme==="dark"?"Light Mode":"Dark Mode";
 }
+function toggleTheme(){
+  const dark=document.documentElement.getAttribute("data-theme")==="dark";
+  const next=dark?"light":"dark";
+  applyThemeUI(next);
+  sv("pp_th",next);
+}
+function toggleAuthTheme(){toggleTheme()}
+(function initThemeEarly(){
+  const th=ld("pp_th")||"light";
+  applyThemeUI(th);
+  const mockEl=document.getElementById("mock-emp");
+  if(mockEl)mockEl.textContent=(Array.isArray(emps)?emps.length:0)||"—";
+})();
 
 // ── COMPANY SETTINGS ──
 function loadCoFields(){
   ["name","addr1","addr2","pf","esic","est","bank","phone","mobile","email","gst","udyam"].forEach(k=>{const el=_id("co-"+k);if(el)el.value=co[k]||""});
   if(co.logo)_id("logo-preview").innerHTML=`<img src="${co.logo}" style="max-height:80px;border-radius:6px;margin-top:8px"/>`;
-  _id("co-short").textContent=co.name||"PayrollPro";
+  _id("co-short").textContent=co.name||"Payroll Solutions";
 }
 function saveCo(){
   ["name","addr1","addr2","pf","esic","est","bank","phone","mobile","email","gst","udyam"].forEach(k=>{const el=_id("co-"+k);if(el)co[k]=el.value});
-  _id("co-short").textContent=co.name||"PayrollPro";
+  _id("co-short").textContent=co.name||"Payroll Solutions";
   sv("pp_co",co);
 }
 function uploadLogo(){
@@ -2145,7 +2319,7 @@ function initApp(){
   loadCoFields();
   const th=ld("pp_th")||"light";document.documentElement.setAttribute("data-theme",th);
   if(th==="dark"){_id("tic").textContent="☀️";_id("tlb").textContent="Light Mode"}
-  _id("co-short").textContent=co.name||"PayrollPro";
+  _id("co-short").textContent=co.name||"Payroll Solutions";
 
   const m=gCM();
   ["gmo","att-mf","proc-m","ps-m","sr-m","pfr-m","esir-m","ecr-m","bank-m","ot-m"].forEach(id=>setV(id,m));
