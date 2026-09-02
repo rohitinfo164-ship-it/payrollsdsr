@@ -362,12 +362,224 @@ body.authed #auth-screen{display:none!important}
 .tw::-webkit-scrollbar{height:8px}
 .tw::-webkit-scrollbar-thumb{background:var(--bi);border-radius:4px}
 .tw::-webkit-scrollbar-track{background:var(--bg)}
+
+/* ============ LANDING PAGE ============ */
+#landing-page{background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden}
+#landing-page.hidden{display:none!important}
+body.authed #landing-page{display:none!important}
+#landing-page *{box-sizing:border-box}
+#landing-page a{text-decoration:none;color:inherit}
+#landing-page section{padding:80px 24px}
+#landing-page h2{font-size:2rem;font-weight:800;text-align:center;color:var(--t1)}
+.lp-sec-sub{text-align:center;color:var(--t2);max-width:560px;margin:10px auto 0;font-size:.95rem;line-height:1.6}
+
+/* nav */
+.lp-nav{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--bd);backdrop-filter:blur(8px)}
+.lp-nav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;gap:20px}
+.lp-logo{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:800;color:var(--t1);flex-shrink:0}
+.lp-logo span{color:var(--bl)}
+.lp-logo-ic{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lp-logo-ic svg{width:20px;height:20px}
+.lp-nav-links{display:flex;gap:28px;font-size:.87rem;font-weight:600;color:var(--t2)}
+.lp-nav-links a:hover{color:var(--bl)}
+.lp-nav-actions{display:flex;gap:10px;align-items:center;flex-shrink:0}
+@media (max-width:760px){.lp-nav-links{display:none}}
+
+/* buttons */
+.lp-btn-solid,.lp-btn-outline,.lp-btn-ghost{border-radius:9px;font-weight:700;cursor:pointer;font-size:.85rem;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .15s,opacity .15s,background .15s}
+.lp-btn-solid{background:linear-gradient(90deg,#1e3a8a,#3b82f6);color:#fff;padding:10px 18px;box-shadow:0 8px 20px rgba(30,58,138,.25)}
+.lp-btn-solid:hover{opacity:.92;transform:translateY(-1px)}
+.lp-btn-outline{background:transparent;color:var(--t1);border:1.5px solid var(--bi);padding:10px 18px}
+.lp-btn-outline:hover{border-color:var(--bl);color:var(--bl)}
+.lp-btn-ghost{background:transparent;color:var(--t2);padding:9px 14px}
+.lp-btn-ghost:hover{color:var(--bl)}
+.lp-btn-lg{padding:14px 26px;font-size:.95rem}
+.lp-btn-solid svg,.lp-btn-outline svg{width:16px;height:16px}
+
+/* hero */
+.lp-hero{background:radial-gradient(circle at 20% -10%,rgba(59,130,246,.12),transparent 55%),radial-gradient(circle at 90% 0%,rgba(30,58,138,.1),transparent 45%);text-align:center;padding:90px 24px 70px}
+.lp-hero-inner{max-width:800px;margin:0 auto}
+.lp-hero-eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--info);color:var(--bl);font-size:.74rem;font-weight:700;padding:6px 14px;border-radius:20px;margin-bottom:20px}
+.lp-hero h1{font-size:2.7rem;font-weight:900;line-height:1.18;color:var(--t1);letter-spacing:-.5px}
+.lp-hero h1 em{font-style:normal;background:linear-gradient(90deg,#1e3a8a,#3b82f6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lp-hero-sub{margin-top:20px;font-size:1.05rem;color:var(--t2);line-height:1.7;max-width:640px;margin-left:auto;margin-right:auto}
+.lp-hero-cta{display:flex;gap:14px;justify-content:center;margin-top:34px;flex-wrap:wrap}
+.lp-trust{display:flex;gap:14px;justify-content:center;margin-top:38px;flex-wrap:wrap}
+.lp-trust-badge{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:8px 16px;font-size:.76rem;font-weight:700;color:var(--t2);box-shadow:0 2px 8px rgba(0,0,0,.04)}
+@media (max-width:640px){.lp-hero h1{font-size:1.9rem}.lp-hero-sub{font-size:.92rem}}
+
+/* feature grid */
+.lp-feature-grid{max-width:1180px;margin:44px auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+@media (max-width:1000px){.lp-feature-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.lp-feature-grid{grid-template-columns:1fr}}
+.lp-feature-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:26px 22px;transition:transform .18s,box-shadow .18s}
+.lp-feature-card:hover{transform:translateY(-4px);box-shadow:0 16px 34px rgba(0,0,0,.09)}
+.lp-feature-ic{width:48px;height:48px;border-radius:12px;background:var(--info);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.lp-feature-card h3{font-size:1rem;font-weight:800;color:var(--t1);margin-bottom:8px}
+.lp-feature-card p{font-size:.83rem;color:var(--t2);line-height:1.6}
+
+/* how it works */
+#landing-page .lp-steps{background:var(--alt)}
+.lp-steps-grid{max-width:1000px;margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:28px;position:relative}
+@media (max-width:800px){.lp-steps-grid{grid-template-columns:1fr}}
+.lp-step-card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:28px 22px;text-align:center;position:relative}
+.lp-step-num{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1rem}
+.lp-step-card h3{font-size:.95rem;font-weight:800;color:var(--t1);margin-bottom:8px}
+.lp-step-card p{font-size:.82rem;color:var(--t2);line-height:1.6}
+
+/* calculator */
+.lp-calc-card{max-width:900px;margin:44px auto 0;background:var(--card);border:1px solid var(--bd);border-radius:20px;box-shadow:0 20px 50px rgba(0,0,0,.08);display:flex;overflow:hidden}
+@media (max-width:700px){.lp-calc-card{flex-direction:column}}
+.lp-calc-left,.lp-calc-right{flex:1;padding:32px 30px}
+.lp-calc-left{background:linear-gradient(160deg,#0b1120,#132348 60%,#1e3a8a);color:#fff}
+.lp-calc-left h2{text-align:left;font-size:1.3rem;color:#fff;margin-bottom:10px}
+.lp-calc-left p{font-size:.83rem;color:#a9b8d8;line-height:1.6;margin-bottom:22px}
+.lp-calc-left label{display:block;font-size:.78rem;font-weight:700;color:#cbd8f0;margin-bottom:8px}
+.lp-calc-input-w{position:relative}
+.lp-calc-input-w span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#0f172a;font-weight:700}
+#calc-gross{width:100%;padding:12px 14px 12px 30px;border-radius:9px;border:none;font-size:1rem;font-weight:700;color:#0f172a}
+#calc-gross:focus{outline:2px solid #60a5fa}
+.lp-calc-right{display:flex;flex-direction:column;justify-content:center;gap:14px}
+.lp-calc-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:10px;background:var(--alt);font-size:.85rem;color:var(--t2);font-weight:600}
+.lp-calc-row b{color:var(--t1);font-size:.95rem}
+.lp-calc-row.lp-calc-net{background:var(--info);color:var(--bl)}
+.lp-calc-row.lp-calc-net b{color:var(--bl);font-size:1.15rem}
+.lp-calc-note{font-size:.72rem;color:var(--tm);text-align:center;margin-top:2px}
+
+/* footer */
+.lp-footer{max-width:1180px;margin:0 auto;padding:34px 24px 50px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--bd);font-size:.8rem;color:var(--t2)}
+
+/* ============ AUTH SCREEN ENHANCEMENTS ============ */
+#auth-screen.hidden{display:none!important}
+#auth-screen{padding:32px}
+.auth-shell{border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.28);min-height:0}
+@media (max-width:900px){#auth-screen{padding:0}.auth-shell{border-radius:0}}
+.auth-back{position:absolute;top:24px;left:28px;display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:var(--t2);cursor:pointer;z-index:2}
+.auth-back:hover{color:var(--bl)}
+.auth-back svg{width:14px;height:14px}
+.auth-microcopy{text-align:center;font-size:.78rem;color:var(--t2);margin-top:-16px;margin-bottom:20px}
+.auth-pane{animation:authFade .25s ease}
+@keyframes authFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body class="not-authed">
 
+<!-- ============ LANDING PAGE ============ -->
+<div id="landing-page">
+  <header class="lp-nav">
+    <div class="lp-nav-inner">
+      <div class="lp-logo">
+        <div class="lp-logo-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="3" fill="#93c5fd"/><path d="M5 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1" stroke="#93c5fd" stroke-width="1.8" stroke-linecap="round"/><circle cx="6" cy="9" r="2.2" fill="#60a5fa"/><circle cx="18" cy="9" r="2.2" fill="#60a5fa"/></svg></div>
+        Payroll <span>Solutions</span>
+      </div>
+      <nav class="lp-nav-links">
+        <a href="#features" onclick="scrollToSection('features');return false;">Features</a>
+        <a href="#how-it-works" onclick="scrollToSection('how-it-works');return false;">How It Works</a>
+        <a href="#calculator" onclick="scrollToSection('calculator');return false;">Calculator</a>
+      </nav>
+      <div class="lp-nav-actions">
+        <button class="lp-btn-ghost" onclick="goToAuth('login')">Sign In</button>
+        <button class="lp-btn-solid" onclick="goToAuth('register')">Get Started Free</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="lp-hero">
+    <div class="lp-hero-inner">
+      <div class="lp-hero-eyebrow">⚡ Built for Indian Businesses</div>
+      <h1>Effortless Payroll, Instant Payouts &amp; <em>100% Automated</em> Statutory Compliance</h1>
+      <p class="lp-hero-sub">Manage employee salaries, sync attendance, generate EPFO ECR files, and streamline Indian labor law compliance—all from one secure platform.</p>
+      <div class="lp-hero-cta">
+        <button class="lp-btn-solid lp-btn-lg" onclick="goToAuth('register')">Get Started Free <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="lp-btn-outline lp-btn-lg" onclick="scrollToSection('features')">Explore Features</button>
+      </div>
+      <div class="lp-trust">
+        <div class="lp-trust-badge">🛡️ 100% Statutory Compliant (EPFO &amp; ESIC Ready)</div>
+        <div class="lp-trust-badge">🔒 Local &amp; Encrypted Data Storage</div>
+        <div class="lp-trust-badge">⚡ Zero Setup Time</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>Everything You Need to Run Payroll</h2>
+    <p class="lp-sec-sub">A complete toolkit for salary processing, attendance sync, and statutory compliance — built to save your HR team hours every month.</p>
+    <div class="lp-feature-grid">
+      <div class="lp-feature-card">
+        <div class="lp-feature-ic">⚡</div>
+        <h3>One-Click Salary Disbursal</h3>
+        <p>Process full-time, contract, and intern payouts effortlessly with structured allowances and deductions.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-ic">🏛️</div>
+        <h3>Auto Compliance &amp; EPFO ECR</h3>
+        <p>Instant ECR text file generation in official Ministry of Labour format, plus ready-to-use ESI registers.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-ic">⏱️</div>
+        <h3>Smart Attendance &amp; Overtime Sync</h3>
+        <p>Seamlessly map working days, leaves, LOP, and double-rate overtime directly into net pay.</p>
+      </div>
+      <div class="lp-feature-card">
+        <div class="lp-feature-ic">🏧</div>
+        <h3>Bank Transfer &amp; Payslip Generator</h3>
+        <p>Export pre-formatted Bank Advice transfer sheets and generate official digital pay slips in seconds.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-steps" id="how-it-works">
+    <h2>How It Works</h2>
+    <p class="lp-sec-sub">Go from employee onboarding to a fully compliant payout in three simple steps.</p>
+    <div class="lp-steps-grid">
+      <div class="lp-step-card">
+        <div class="lp-step-num">1</div>
+        <h3>Add Employees &amp; Salary Structure</h3>
+        <p>Setup basic details, UAN, ESIC, and salary components.</p>
+      </div>
+      <div class="lp-step-card">
+        <div class="lp-step-num">2</div>
+        <h3>Input Attendance &amp; Overtime</h3>
+        <p>Log working days, approved leaves, and overtime hours.</p>
+      </div>
+      <div class="lp-step-card">
+        <div class="lp-step-num">3</div>
+        <h3>Run Payroll &amp; Export Reports</h3>
+        <p>Generate net salary, download EPFO ECR &amp; Bank Advice sheets.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="calculator">
+    <h2>Quick Salary Calculator</h2>
+    <p class="lp-sec-sub">Get an instant estimate of statutory deductions and take-home salary.</p>
+    <div class="lp-calc-card">
+      <div class="lp-calc-left">
+        <h2>Try It Yourself</h2>
+        <p>Enter a gross monthly salary to preview estimated EPF and ESIC deductions and the resulting take-home pay. This is an indicative estimate only.</p>
+        <label>Gross Monthly Salary (₹)</label>
+        <div class="lp-calc-input-w">
+          <span>₹</span>
+          <input type="number" id="calc-gross" placeholder="e.g. 25000" min="0" oninput="calcTakeHome()"/>
+        </div>
+      </div>
+      <div class="lp-calc-right">
+        <div class="lp-calc-row"><span>Estimated EPF (12%)</span><b id="calc-epf">₹0</b></div>
+        <div class="lp-calc-row"><span>Estimated ESIC (0.75%)</span><b id="calc-esic">₹0</b></div>
+        <div class="lp-calc-row lp-calc-net"><span>Estimated Net Take-Home</span><b id="calc-net">₹0</b></div>
+        <div class="lp-calc-note" id="calc-note">Enter your gross salary to see an estimate.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="lp-footer">
+    <div>© <span id="lp-year"></span> Payroll Solutions. All rights reserved.</div>
+    <button class="lp-btn-solid" onclick="goToAuth('register')">Get Started Free</button>
+  </footer>
+</div>
+
 <!-- AUTH SCREEN -->
-<div id="auth-screen">
+<div id="auth-screen" class="hidden">
   <div class="auth-shell">
     <!-- LEFT BRAND PANEL -->
     <div class="auth-brand">
@@ -418,6 +630,10 @@ body.authed #auth-screen{display:none!important}
 
     <!-- RIGHT FORM PANEL -->
     <div class="auth-formside">
+      <div class="auth-back" onclick="backToLanding()">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M19 12H5M11 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to Home
+      </div>
       <div class="auth-theme-tog" onclick="toggleAuthTheme()" title="Toggle dark mode">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         <div class="auth-theme-sw" id="auth-theme-sw"><i></i></div>
@@ -431,6 +647,7 @@ body.authed #auth-screen{display:none!important}
           <h1 id="auth-title">Welcome Back!</h1>
           <p id="auth-subtitle">Login to your Payroll Solutions account</p>
         </div>
+        <p class="auth-microcopy">Join smart businesses managing payroll with ease.</p>
         <div class="auth-msg" id="auth-msg"></div>
 
         <!-- LOGIN -->
@@ -1128,6 +1345,50 @@ function authMsg(text,type){
   if(!text){el.style.display="none";el.className="auth-msg";return}
   el.textContent=text;el.className="auth-msg "+(type==="ok"?"ok":"err");
 }
+// ── LANDING PAGE <-> AUTH SCREEN NAVIGATION ──
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function goToAuth(view){
+  const lp=document.getElementById("landing-page");
+  const as=document.getElementById("auth-screen");
+  if(lp)lp.classList.add("hidden");
+  if(as)as.classList.remove("hidden");
+  switchAuthTab(view==="register"?"register":"login");
+  window.scrollTo(0,0);
+}
+function backToLanding(){
+  const lp=document.getElementById("landing-page");
+  const as=document.getElementById("auth-screen");
+  if(as)as.classList.add("hidden");
+  if(lp)lp.classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+// ── QUICK SALARY CALCULATOR (LANDING PAGE) ──
+function calcTakeHome(){
+  const inp=_id("calc-gross");
+  const epfEl=_id("calc-epf"),esicEl=_id("calc-esic"),netEl=_id("calc-net"),noteEl=_id("calc-note");
+  if(!inp||!epfEl||!esicEl||!netEl)return;
+  const gross=parseFloat(inp.value)||0;
+  if(gross<=0){
+    epfEl.textContent="₹0";esicEl.textContent="₹0";netEl.textContent="₹0";
+    if(noteEl)noteEl.textContent="Enter your gross salary to see an estimate.";
+    return;
+  }
+  const epf=Math.round(gross*0.12);
+  const esicEligible=gross<=21000;
+  const esic=esicEligible?Math.round(gross*0.0075):0;
+  const net=Math.round(gross-epf-esic);
+  epfEl.textContent="₹"+epf.toLocaleString("en-IN");
+  esicEl.textContent=esicEligible?("₹"+esic.toLocaleString("en-IN")):"Not Applicable";
+  netEl.textContent="₹"+net.toLocaleString("en-IN");
+  if(noteEl)noteEl.textContent=esicEligible?"ESIC applies as gross salary is within the ₹21,000 wage limit.":"ESIC not applicable — gross salary exceeds the ₹21,000 wage limit.";
+}
+(function(){
+  const yEl=document.getElementById("lp-year");
+  if(yEl)yEl.textContent=new Date().getFullYear();
+})();
 function switchAuthTab(which){
   authMsg("");
   _id("pane-login").classList.toggle("act",which==="login");
@@ -1280,6 +1541,7 @@ if(firebaseReady)fbAuth.onAuthStateChanged(user=>{
     currentUser=null;
     document.body.classList.remove("authed");
     document.body.classList.add("not-authed");
+    if(typeof backToLanding==="function")backToLanding();
   }
 });
 ["li-email","li-pass"].forEach(id=>{
