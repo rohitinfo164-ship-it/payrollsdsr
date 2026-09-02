@@ -947,9 +947,28 @@ const firebaseConfig={
   appId:"1:708991806028:web:1d46499b4bbac20dd222e9",
   measurementId:"G-CYWC8WKYJ2"
 };
-firebase.initializeApp(firebaseConfig);
-const fbAuth=firebase.auth();
-const fbDb=firebase.firestore();
+let firebaseReady=false;
+let fbAuth=null,fbDb=null;
+try{
+  if(typeof firebase==="undefined")throw new Error("Firebase SDK load nahi ho payi (internet/adblocker check karein).");
+  firebase.initializeApp(firebaseConfig);
+  fbAuth=firebase.auth();
+  fbDb=firebase.firestore();
+  firebaseReady=true;
+}catch(fbInitErr){
+  console.error("Firebase init failed:",fbInitErr);
+  window.addEventListener("DOMContentLoaded",()=>{
+    const m=_id("auth-msg");
+    if(m){m.textContent="Connection error: "+fbInitErr.message+" — Page reload karein ya internet check karein.";m.className="auth-msg err"}
+  });
+}
+window.addEventListener("error",function(ev){
+  console.error("Uncaught error:",ev.error||ev.message);
+  if(document.body.classList.contains("not-authed")){
+    const m=_id("auth-msg");
+    if(m&&m.className.indexOf("err")===-1){m.textContent="Error: "+(ev.message||"Kuch galat ho gaya")+" — F12 dabakar Console tab check karein.";m.className="auth-msg err"}
+  }
+});
 let currentUser=null;
 let cloudSaveTimer=null;
 let cloudSaving=false;
@@ -987,6 +1006,7 @@ function fbErrMsg(err){
   return map[c]||(err&&err.message)||"Kuch galat ho gaya, dobara try karein.";
 }
 function handleRegister(){
+  if(!firebaseReady){authMsg("Firebase load nahi ho paya. Page reload karke dobara try karein.");return}
   const coName=(_id("rg-co").value||"").trim();
   const email=(_id("rg-email").value||"").trim();
   const pass=_id("rg-pass").value||"";
@@ -1023,6 +1043,7 @@ function handleRegister(){
   });
 }
 function handleLogin(){
+  if(!firebaseReady){authMsg("Firebase load nahi ho paya. Page reload karke dobara try karein.");return}
   const email=(_id("li-email").value||"").trim();
   const pass=_id("li-pass").value||"";
   authMsg("");
@@ -1034,6 +1055,7 @@ function handleLogin(){
   });
 }
 function handleForgotPassword(){
+  if(!firebaseReady){authMsg("Firebase load nahi ho paya. Page reload karke dobara try karein.");return}
   const email=(_id("li-email").value||"").trim();
   if(!email){authMsg("Pehle apna email likhein, phir 'Password bhool gaye' dabayein.");return}
   fbAuth.sendPasswordResetEmail(email).then(()=>{
@@ -1041,6 +1063,7 @@ function handleForgotPassword(){
   }).catch(err=>authMsg(fbErrMsg(err)));
 }
 function handleLogout(){
+  if(!firebaseReady){toast("Firebase load nahi ho paya.","te");return}
   if(!confirm("Kya aap logout karna chahte hain?"))return;
   fbAuth.signOut();
 }
@@ -1073,7 +1096,7 @@ function startAppFor(user){
   document.body.classList.add("authed");
   initApp();
 }
-fbAuth.onAuthStateChanged(user=>{
+if(firebaseReady)fbAuth.onAuthStateChanged(user=>{
   if(user){
     fbDb.collection("companies").doc(user.uid).get().then(docSnap=>{
       suppressCloudSave=true;
@@ -1099,11 +1122,11 @@ fbAuth.onAuthStateChanged(user=>{
   }
 });
 ["li-email","li-pass"].forEach(id=>{
-  const el=_id(id);
+  const el=document.getElementById(id);
   if(el)el.addEventListener("keydown",ev=>{if(ev.key==="Enter")handleLogin()});
 });
 ["rg-co","rg-email","rg-pass","rg-pass2"].forEach(id=>{
-  const el=_id(id);
+  const el=document.getElementById(id);
   if(el)el.addEventListener("keydown",ev=>{if(ev.key==="Enter")handleRegister()});
 });
 
