@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>EPFO & ESIC Pro – Neelkanth Biotech</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.6.0/jspdf.plugin.autotable.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<style>
+:root{
+  --bg:#f0f4f8;--sb:#0f172a;--card:#fff;--th:#1e293b;--alt:#f8fafc;
+  --inp:#fff;--mo:#fff;--hov:#e2e8f0;--info:#eff6ff;
+  --t1:#0f172a;--t2:#475569;--tm:#94a3b8;--ts:#cbd5e1;--tw:#fff;
+  --bd:#e2e8f0;--bi:#cbd5e1;--bf:#3b82f6;
+  --bl:#3b82f6;--gn:#10b981;--or:#f59e0b;--pu:#8b5cf6;--rd:#ef4444;--tl:#14b8a6;
+  --sw:260px;--topH:60px;
+}
+[data-theme=dark]{
+  --bg:#0d1117;--card:#161b22;--th:#21262d;--alt:#161b22;--inp:#21262d;--mo:#1c2128;--hov:#21262d;--info:#1c2a3a;
+  --t1:#e6edf3;--t2:#8b949e;--tm:#484f58;--bd:#30363d;--bi:#30363d;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--t1);display:flex;min-height:100vh;overflow-x:hidden}
+/* SIDEBAR */
+.sb{width:var(--sw);background:var(--sb);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;transition:transform .2s}
+.sb-logo{display:flex;align-items:center;gap:12px;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
+.logo-i{font-size:26px}
+.logo-t{display:block;color:#fff;font-size:1rem;font-weight:700}
+.logo-s{display:block;color:#64748b;font-size:.68rem;margin-top:1px}
+.sb-nav{flex:1;padding:10px 0}
+.ns{padding:9px 18px 3px;font-size:.62rem;font-weight:700;letter-spacing:1px;color:#475569;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 18px;color:var(--ts);cursor:pointer;border-left:3px solid transparent;transition:all .2s;font-size:.85rem;user-select:none}
+.ni:hover{background:rgba(255,255,255,.06);color:#fff}
+.ni.act{background:rgba(59,130,246,.15);color:#fff;border-left-color:var(--bl)}
+.ni-i{font-size:.95rem;width:18px;text-align:center}
+.bdg{margin-left:auto;background:var(--rd);color:#fff;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:10px;min-width:18px;text-align:center}
+.sb-ft{padding:14px 18px;border-top:1px solid rgba(255,255,255,.06)}
+.th-btn{width:100%;background:rgba(255,255,255,.06);color:var(--ts);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:7px 12px;cursor:pointer;font-size:.78rem;display:flex;align-items:center;gap:8px}
+.th-btn:hover{background:rgba(255,255,255,.12)}
+.sb-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+/* MAIN */
+.mc{margin-left:var(--sw);flex:1;min-height:100vh;min-width:0;display:flex;flex-direction:column}
+.topbar{height:var(--topH);background:var(--card);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:14px;padding:0 22px;position:sticky;top:0;z-index:50;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.menu-btn{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--t1);padding:4px 8px}
+.tb-ttl{font-size:.95rem;font-weight:700;flex:1}
+.tb-act{display:flex;align-items:center;gap:8px}
+.mo-sel{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--t2)}
+.mo-sel input{padding:4px 8px;border:1.5px solid var(--bi);border-radius:5px;background:var(--inp);color:var(--t1);font-size:.78rem;outline:none}
+.pc{flex:1;padding:20px;min-width:0}
+.page{display:none}.page.act{display:block;min-width:0}
+/* PAGE HEADER */
+.ph{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.ph h2{font-size:1.35rem;font-weight:700}
+.ph-sub{color:var(--t2);font-size:.82rem;margin-top:2px}
+.pa{display:flex;gap:7px;flex-wrap:wrap}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:5px;font-size:.78rem;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;white-space:nowrap}
+.bp{background:var(--bl);color:#fff}.bp:hover{background:#2563eb}
+.bg2{background:var(--gn);color:#fff}.bg2:hover{background:#059669}
+.bd2{background:var(--rd);color:#fff}.bd2:hover{background:#dc2626}
+.bor{background:var(--or);color:#fff}.bor:hover{background:#d97706}
+.bo{background:transparent;border-color:var(--bi);color:var(--t2)}.bo:hover{border-color:var(--bl);color:var(--bl)}
+.bic{background:none;border:none;cursor:pointer;font-size:.95rem;padding:3px 5px;border-radius:4px;transition:background .15s}
+.bic:hover{background:var(--hov)}
+/* KPI */
+.kpi-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:var(--card);border-radius:10px;padding:18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(0,0,0,.07);transition:transform .18s}
+.kpi:hover{transform:translateY(-2px)}
+.kpi-ic{font-size:1.8rem;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:9px}
+.kpi-lb{font-size:.72rem;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.4px}
+.kpi-vl{font-size:1.25rem;font-weight:800;margin-top:2px}
+.k-bl{border-left:4px solid var(--bl)}.k-bl .kpi-ic{background:#dbeafe;color:#1d4ed8}.k-bl .kpi-vl{color:#1d4ed8}
+.k-gr{border-left:4px solid var(--gn)}.k-gr .kpi-ic{background:#d1fae5;color:#065f46}.k-gr .kpi-vl{color:#065f46}
+.k-or{border-left:4px solid var(--or)}.k-or .kpi-ic{background:#fef3c7;color:#92400e}.k-or .kpi-vl{color:#92400e}
+.k-pu{border-left:4px solid var(--pu)}.k-pu .kpi-ic{background:#ede9fe;color:#5b21b6}.k-pu .kpi-vl{color:#5b21b6}
+.k-rd{border-left:4px solid var(--rd)}.k-rd .kpi-ic{background:#fee2e2;color:#991b1b}.k-rd .kpi-vl{color:#991b1b}
+.k-tl{border-left:4px solid var(--tl)}.k-tl .kpi-ic{background:#ccfbf1;color:#134e4a}.k-tl .kpi-vl{color:#134e4a}
+/* DASH */
+.dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.dc{background:var(--card);border-radius:10px;padding:18px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.ct{font-size:.88rem;font-weight:700;margin-bottom:14px}
+.elr{display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--t2);margin-bottom:10px}
+.elr>span:first-child{min-width:105px}
+.elr>span:last-child{min-width:26px;text-align:right;font-weight:700;color:var(--t1)}
+.elbw{flex:1;background:var(--bg);border-radius:20px;height:7px;overflow:hidden}
+.elb{height:100%;border-radius:20px;transition:width .6s}
+.b-pf{background:var(--or)}.b-esi{background:var(--pu)}.b-tot{background:var(--bl)}
+.bkl{display:flex;flex-direction:column;gap:6px}
+.brr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--bd);font-size:.8rem}
+.brr:last-child{border-bottom:none}
+.dpl{display:flex;flex-direction:column;gap:5px}
+.dpr{display:flex;justify-content:space-between;align-items:center;padding:5px 9px;border-radius:5px;background:var(--bg);font-size:.8rem}
+.dc2{background:var(--bl);color:#fff;font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:10px}
+.dal{display:flex;flex-direction:column;gap:7px}
+.dai{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:5px;font-size:.78rem;background:var(--bg)}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dr{background:var(--rd)}.do{background:var(--or)}.db{background:var(--bl)}.dg3{background:var(--gn)}
+/* FILTER */
+.fb{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.si,.sei{padding:7px 11px;border:1.5px solid var(--bi);border-radius:5px;background:var(--inp);color:var(--t1);font-size:.8rem;outline:none;transition:border-color .18s;min-width:160px}
+.si:focus,.sei:focus{border-color:var(--bf)}
+.si{flex:1}
+/* TABLE */
+.tw{background:var(--card);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;max-width:100%;width:100%;display:block}
+.dt{width:max-content;min-width:100%;border-collapse:collapse;font-size:.78rem}
+.dt thead tr{background:var(--th)}
+.dt thead th{padding:11px 13px;text-align:left;color:var(--tw);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.dt tbody tr{border-bottom:1px solid var(--bd);transition:background .15s}
+.dt tbody tr:nth-child(even){background:var(--alt)}
+.dt tbody tr:hover{background:var(--hov)}
+.dt td{padding:9px 13px;white-space:nowrap}
+.dt tfoot tr{background:var(--th)}
+.dt tfoot td{padding:9px 13px;color:var(--tw);font-weight:700;font-size:.78rem}
+.bok{display:inline-block;background:#d1fae5;color:#065f46;padding:2px 7px;border-radius:9px;font-size:.7rem;font-weight:700}
+.bno{display:inline-block;background:#fee2e2;color:#991b1b;padding:2px 7px;border-radius:9px;font-size:.7rem;font-weight:700}
+.tr{text-align:right}.tc{text-align:center}
+/* INFO BOX */
+.ib{background:var(--info);border:1px solid #bfdbfe;border-radius:5px;padding:9px 14px;font-size:.78rem;color:var(--t2);margin-bottom:14px}
+/* AUTH SCREEN */
+body.not-authed .sb,body.not-authed .sb-ov,body.not-authed .mc{display:none!important}
+body.authed #auth-screen{display:none!important}
+#auth-screen{position:fixed;inset:0;background:linear-gradient(135deg,#0f172a,#1e293b);z-index:500;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.auth-card{background:var(--card);width:100%;max-width:400px;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.4);overflow:hidden}
+.auth-hd{padding:26px 28px 18px;text-align:center;border-bottom:1px solid var(--bd)}
+.auth-hd .ai{font-size:2rem;margin-bottom:6px}
+.auth-hd h1{font-size:1.15rem;font-weight:800;color:var(--t1)}
+.auth-hd p{font-size:.75rem;color:var(--t2);margin-top:3px}
+.auth-tabs{display:flex;border-bottom:1px solid var(--bd)}
+.auth-tab{flex:1;text-align:center;padding:12px;font-size:.82rem;font-weight:700;color:var(--t2);cursor:pointer;border-bottom:2.5px solid transparent}
+.auth-tab.act{color:var(--bl);border-bottom-color:var(--bl)}
+.auth-body{padding:22px 28px 26px}
+.auth-fld{margin-bottom:13px}
+.auth-fld label{display:block;font-size:.72rem;font-weight:700;color:var(--t2);margin-bottom:5px}
+.auth-fld input{width:100%;padding:9px 11px;border:1.5px solid var(--bi);border-radius:6px;background:var(--inp);color:var(--t1);font-size:.85rem}
+.auth-fld input:focus{outline:none;border-color:var(--bl)}
+.auth-btn{width:100%;padding:11px;border-radius:7px;border:none;background:var(--bl);color:#fff;font-size:.88rem;font-weight:700;cursor:pointer;margin-top:6px}
+.auth-btn:hover{background:#2563eb}
+.auth-btn:disabled{opacity:.6;cursor:not-allowed}
+.auth-msg{font-size:.74rem;padding:8px 11px;border-radius:6px;margin-bottom:12px;display:none}
+.auth-msg.err{display:block;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+.auth-msg.ok{display:block;background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.auth-fp{text-align:center;font-size:.72rem;color:var(--bl);margin-top:12px;cursor:pointer}
+.auth-pane{display:none}.auth-pane.act{display:block}
+.acct-chip{display:flex;align-items:center;gap:8px;margin-left:auto;font-size:.76rem;color:var(--t2)}
+.acct-chip b{color:var(--t1)}
+.acct-out{background:transparent;border:1.5px solid var(--bi);color:var(--t2);border-radius:5px;padding:5px 10px;font-size:.72rem;cursor:pointer;font-weight:600}
+.acct-out:hover{border-color:var(--rd);color:var(--rd)}
+/* FORM */
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.fgr{display:flex;flex-direction:column;gap:4px}
+.fgr.fw{grid-column:1/-1}
+.fgr label{font-size:.75rem;font-weight:600;color:var(--t2)}
+.fgr input,.fgr select,.fgr textarea{padding:7px 11px;border:1.5px solid var(--bi);border-radius:5px;background:var(--inp);color:var(--t1);font-size:.81rem;outline:none;transition:border-color .18s;width:100%}
+.fgr input:focus,.fgr select:focus,.fgr textarea:focus{border-color:var(--bf)}
+.ro{background:var(--bg)!important;cursor:not-allowed}
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:16px}
+.mo.open{display:flex}
+.md{background:var(--mo);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.18);width:100%;max-width:600px;max-height:92vh;display:flex;flex-direction:column;animation:mii .18s ease}
+.md.lg{max-width:900px}
+@keyframes mii{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd)}
+.mh h3{font-size:.95rem;font-weight:700}
+.mb{flex:1;overflow-y:auto;padding:18px 20px}
+.mf{display:flex;justify-content:flex-end;gap:8px;padding:12px 20px;border-top:1px solid var(--bd)}
+.mcl{background:none;border:none;font-size:1.15rem;cursor:pointer;color:var(--tm)}.mcl:hover{color:var(--rd)}
+.vm{margin-top:8px;padding:7px 11px;border-radius:5px;font-size:.78rem;font-weight:600}
+.vm.ok{background:#d1fae5;color:#065f46}.vm.er{background:#fee2e2;color:#991b1b}
+/* ALERTS */
+.ac{display:flex;flex-direction:column;gap:12px}
+.ag{background:var(--card);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden}
+.agh{display:flex;align-items:center;gap:9px;padding:13px 16px;font-size:.88rem;font-weight:700;color:#fff}
+.agh.ar{background:var(--rd)}.agh.ao{background:var(--or)}.agh.ab{background:var(--bl)}.agh.agn{background:var(--gn)}
+.agb{padding:10px 16px 13px}
+.aet{display:inline-block;background:var(--bg);color:var(--t2);border:1px solid var(--bd);border-radius:4px;padding:2px 9px;font-size:.73rem;margin:3px 3px 0 0}
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:#1e293b;color:#fff;padding:11px 20px;border-radius:6px;font-size:.82rem;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);transition:opacity .22s,transform .22s;z-index:999;max-width:320px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.ts{background:var(--gn)}.toast.te{background:var(--rd)}.toast.ti{background:var(--bl)}
+/* EMPTY */
+.es{padding:36px;text-align:center;color:var(--tm);font-size:.88rem}
+.es .em{font-size:2.2rem;display:block;margin-bottom:8px}
+/* COMPANY SETTINGS */
+.co-hdr{font-size:1.1rem;font-weight:700;color:var(--t1);margin-bottom:4px}
+.co-sub{font-size:.8rem;color:var(--t2);margin-bottom:20px}
+/* IMPORT ZONE */
+.import-zone{border:2px dashed var(--bi);border-radius:8px;padding:30px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg)}
+.import-zone:hover,.import-zone.drag{border-color:var(--bl);background:#eff6ff}
+.import-zone .iz-ic{font-size:2.5rem;display:block;margin-bottom:10px}
+.import-zone p{color:var(--t2);font-size:.85rem}
+.import-zone span{color:var(--bl);font-weight:600;cursor:pointer}
+.import-preview{margin-top:14px;display:none}
+/* EMPLOYEE CARD */
+.emp-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.emp-card{background:var(--card);border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);overflow:hidden;position:relative}
+.emp-card-header{background:linear-gradient(135deg,#1e293b 0%,#334155 100%);padding:20px;display:flex;align-items:center;gap:16px}
+.emp-card-photo{width:70px;height:70px;border-radius:50%;border:3px solid rgba(255,255,255,.3);object-fit:cover;background:#475569;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;flex-shrink:0;overflow:hidden}
+.emp-card-photo img{width:100%;height:100%;object-fit:cover}
+.emp-card-name{color:#fff;font-size:1rem;font-weight:700}
+.emp-card-des{color:#94a3b8;font-size:.75rem;margin-top:2px}
+.emp-card-code{background:rgba(255,255,255,.1);color:#fff;font-size:.7rem;padding:2px 8px;border-radius:10px;margin-top:5px;display:inline-block}
+.emp-card-body{padding:16px}
+.emp-card-row{display:flex;gap:8px;margin-bottom:7px;font-size:.78rem}
+.emp-card-label{color:var(--t2);min-width:80px;font-weight:600}
+.emp-card-val{color:var(--t1)}
+.emp-card-footer{padding:10px 16px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:6px}
+/* PAYSLIP PREVIEW */
+.payslip{max-width:750px;margin:0 auto;background:#fff;border:2px solid #1e293b;padding:24px;font-family:'Segoe UI',sans-serif;color:#000}
+.ps-letterhead{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:12px;border-bottom:3px double #1e293b;margin-bottom:16px}
+.ps-logo-wrap{flex-shrink:0;display:flex;align-items:center;justify-content:center;order:2}
+.ps-logo{height:78px;width:auto;max-width:150px;object-fit:contain;display:block}
+.ps-co-block{flex:1;text-align:left;order:1}
+.ps-co-name{font-size:1.55rem;font-weight:900;color:#1e293b;margin-bottom:3px;line-height:1.15}
+.ps-co-addr{font-size:.75rem;color:#374151;font-weight:600;line-height:1.5}
+.ps-co-contact{font-size:.72rem;color:#475569;font-weight:600;margin-top:2px}
+.ps-title{text-align:center;font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:6px 0;border-top:1px solid #000;border-bottom:1px solid #000;margin-bottom:16px}
+.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.ps-row{display:grid;grid-template-columns:160px 1fr;border-bottom:1px solid #e5e7eb;font-size:.78rem;padding:4px 0}
+.ps-lbl{color:#374151;font-weight:600}
+.ps-val{color:#000;font-weight:700}
+.ps-tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:.78rem}
+.ps-tbl th{background:#1e293b;color:#fff;padding:7px 10px;text-align:left;font-size:.72rem;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ps-tbl td{padding:6px 10px;border-bottom:1px solid #e5e7eb}
+.ps-tbl .tot-row{font-weight:700;background:#f8fafc;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ps-net{text-align:center;margin-top:14px;padding:12px;border:1px solid #1e293b;border-radius:6px}
+.ps-net-lbl{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.ps-net-val{font-size:2rem;font-weight:900;color:#1e293b}
+.ps-sigs{display:flex;justify-content:space-between;margin-top:24px;padding-top:14px;border-top:1px dashed #999;font-size:.75rem;color:#374151}
+/* LETTERHEAD PAGE */
+.lh-doc{max-width:794px;min-height:1050px;margin:0 auto;background:#fff;border:1px solid #cbd5e1;box-shadow:0 2px 14px rgba(0,0,0,.08);padding:40px 44px;font-family:'Segoe UI',sans-serif;color:#000;display:flex;flex-direction:column}
+.lh-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:16px;border-bottom:4px double #1e293b}
+.lh-co-block{text-align:left;order:1}
+.lh-co-name{font-size:1.9rem;font-weight:900;color:#1e293b;line-height:1.15;margin-bottom:5px}
+.lh-co-addr{font-size:.82rem;color:#374151;font-weight:600;line-height:1.5}
+.lh-co-contact{font-size:.78rem;color:#475569;font-weight:600;margin-top:4px}
+.lh-logo-wrap{flex-shrink:0;order:2;display:flex;align-items:center;justify-content:center}
+.lh-logo{height:95px;width:auto;max-width:170px;object-fit:contain;display:block}
+.lh-body{flex:1;padding-top:26px}
+.lh-body textarea{width:100%;height:100%;min-height:520px;border:none;outline:none;resize:vertical;font-family:inherit;font-size:.88rem;color:#111827;line-height:1.9;background:transparent}
+.lh-footer{display:flex;justify-content:space-between;gap:28px;border-top:1px solid #cbd5e1;padding-top:10px;margin-top:auto;font-size:.72rem;color:#64748b}
+.lh-footer-col{display:flex;flex-direction:column;gap:4px}
+.lh-footer-item{display:flex;align-items:center;gap:6px}
+.lh-footer-ic{font-size:.85rem;line-height:1}
+/* EPFO ECR STYLES */
+.ecr-info{background:#fef3c7;border:1px solid #f59e0b;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:.8rem}
+/* PHOTO UPLOAD */
+.photo-upload{width:90px;height:90px;border-radius:50%;border:2px dashed var(--bi);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:.68rem;color:var(--t2);text-align:center;overflow:hidden;position:relative;background:var(--bg);margin:0 auto 10px}
+.photo-upload img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.photo-upload:hover{border-color:var(--bl)}
+/* PRINT */
+@media print{
+  .sb,.topbar,.pa,.fb,.th-btn,.sb-ov,.mo,.toast,.btn,.ni,.ph-act,.ph,.acct-chip{display:none!important}
+  .mc{margin-left:0!important}.pc{padding:0!important}
+  body{background:#fff!important;color:#000!important}
+  .payslip{box-shadow:none;border:2px solid #000;max-width:100%;color:#000!important}
+
+  /* Pay Slip – print: force all colors visible */
+  .payslip{background:#fff!important}
+  .payslip *{color:#000!important}
+
+  /* Table header: dark bg with white text — forced for print */
+  .ps-tbl th{
+    background:#1e293b!important;
+    color:#fff!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+    border:1px solid #1e293b!important;
+    padding:7px 10px!important;
+    font-weight:700!important;
+  }
+  .ps-tbl td{
+    color:#000!important;
+    border-bottom:1px solid #ccc!important;
+  }
+  .ps-tbl .tot-row td{
+    background:#eeeeee!important;
+    color:#000!important;
+    border-top:2px solid #000!important;
+    font-weight:700!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
+  }
+  .ps-net{
+    border:2px solid #000!important;
+    background:#fff!important;
+  }
+  .ps-net-lbl,.ps-net-val{color:#000!important}
+  .ps-letterhead{border-bottom:3px double #000!important}
+  .ps-co-name{color:#000!important}
+  .ps-co-addr{color:#374151!important}
+  .ps-co-contact{color:#374151!important}
+  .ps-title{color:#000!important;border-color:#000!important}
+  .ps-sigs{color:#374151!important;border-top:1px dashed #999!important}
+  /* Info grid rows */
+  .payslip div[style*="border-bottom"]{border-color:#e5e7eb!important}
+  /* Letterhead */
+  .lh-doc{box-shadow:none!important;border:none!important;max-width:100%!important;min-height:auto!important;padding:0!important}
+  .lh-header{border-bottom:4px double #000!important}
+  .lh-co-name{color:#000!important}
+  .lh-co-addr,.lh-co-contact{color:#374151!important}
+  .lh-footer-item{color:#374151!important}
+  .lh-body textarea{color:#000!important;min-height:600px!important}
+}
+@media(max-width:900px){
+  .sb{transform:translateX(-100%)}.sb.open{transform:translateX(0)}
+  .sb-ov.open{display:block}.mc{margin-left:0}.menu-btn{display:block}
+  .kpi-g{grid-template-columns:repeat(2,1fr)}
+  .tw{border:1px solid var(--bd)}
+}
+/* Visible scrollbar on table wrappers so users see they can swipe/scroll sideways */
+.tw::-webkit-scrollbar{height:8px}
+.tw::-webkit-scrollbar-thumb{background:var(--bi);border-radius:4px}
+.tw::-webkit-scrollbar-track{background:var(--bg)}
+</style>
+</head>
+<body class="not-authed">
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-hd">
+      <div class="ai">⚖️</div>
+      <h1>EPFO & ESIC Pro</h1>
+      <p>Payroll & Compliance Suite — apni company ka account banayein ya login karein</p>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab act" id="tab-login" onclick="switchAuthTab('login')">Login</div>
+      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">New Registration</div>
+    </div>
+    <div class="auth-body">
+      <div class="auth-msg" id="auth-msg"></div>
+
+      <!-- LOGIN -->
+      <div class="auth-pane act" id="pane-login">
+        <div class="auth-fld"><label>Email</label><input type="email" id="li-email" placeholder="aapka@email.com" autocomplete="username"/></div>
+        <div class="auth-fld"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••" autocomplete="current-password"/></div>
+        <button class="auth-btn" id="li-btn" onclick="handleLogin()">Login</button>
+        <div class="auth-fp" onclick="handleForgotPassword()">Password bhool gaye?</div>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="auth-pane" id="pane-register">
+        <div class="auth-fld"><label>Company / Firm Name</label><input type="text" id="rg-co" placeholder="e.g. Sharma Textiles Pvt Ltd"/></div>
+        <div class="auth-fld"><label>Email</label><input type="email" id="rg-email" placeholder="aapka@email.com" autocomplete="username"/></div>
+        <div class="auth-fld"><label>Password</label><input type="password" id="rg-pass" placeholder="Kam se kam 6 character" autocomplete="new-password"/></div>
+        <div class="auth-fld"><label>Confirm Password</label><input type="password" id="rg-pass2" placeholder="Password dubara likhein" autocomplete="new-password"/></div>
+        <button class="auth-btn" id="rg-btn" onclick="handleRegister()">Account Banayein</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sb" id="sb">
+  <div class="sb-logo">
+    <div class="logo-i">⚖️</div>
+    <div>
+      <span class="logo-t" id="co-short">PayrollPro</span>
+      <span class="logo-s">EPFO & ESIC Suite</span>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="ns">OVERVIEW</div>
+    <div class="ni act" data-p="dashboard" onclick="nav('dashboard')"><span class="ni-i">📊</span><span>Dashboard</span></div>
+    <div class="ns">MASTER DATA</div>
+    <div class="ni" data-p="employees" onclick="nav('employees')"><span class="ni-i">👥</span><span>Employee Master</span></div>
+    <div class="ni" data-p="empcards" onclick="nav('empcards')"><span class="ni-i">🪪</span><span>Employee Cards</span></div>
+    <div class="ni" data-p="attendance" onclick="nav('attendance')"><span class="ni-i">📅</span><span>Attendance</span></div>
+    <div class="ni" data-p="salstruct" onclick="nav('salstruct')"><span class="ni-i">💰</span><span>Salary Structure</span></div>
+    <div class="ns">PROCESSING</div>
+    <div class="ni" data-p="salproc" onclick="nav('salproc')"><span class="ni-i">⚙️</span><span>Salary Processing</span></div>
+    <div class="ni" data-p="payslip" onclick="nav('payslip')"><span class="ni-i">🧾</span><span>Pay Slip</span></div>
+    <div class="ni" data-p="letterhead" onclick="nav('letterhead')"><span class="ni-i">📃</span><span>Letterhead</span></div>
+    <div class="ns">REPORTS</div>
+    <div class="ni" data-p="salreg" onclick="nav('salreg')"><span class="ni-i">📋</span><span>Salary Register</span></div>
+    <div class="ni" data-p="pfreg" onclick="nav('pfreg')"><span class="ni-i">📑</span><span>PF Register</span></div>
+    <div class="ni" data-p="esireg" onclick="nav('esireg')"><span class="ni-i">📄</span><span>ESI Register</span></div>
+    <div class="ni" data-p="ecr" onclick="nav('ecr')"><span class="ni-i">📤</span><span>EPFO ECR (Govt Format)</span></div>
+    <div class="ni" data-p="bank" onclick="nav('bank')"><span class="ni-i">🏧</span><span>Bank Transfer Sheet</span></div>
+    <div class="ni" data-p="otreg" onclick="nav('otreg')"><span class="ni-i">⏰</span><span>Overtime Register</span></div>
+    <div class="ns">COMPLIANCE</div>
+    <div class="ni" data-p="alerts" onclick="nav('alerts')"><span class="ni-i">🔔</span><span>Compliance Alerts</span><span class="bdg" id="abadge">0</span></div>
+    <div class="ns">SETTINGS</div>
+    <div class="ni" data-p="settings" onclick="nav('settings')"><span class="ni-i">⚙️</span><span>Company Settings</span></div>
+  </nav>
+  <div class="sb-ft">
+    <button class="th-btn" onclick="toggleTheme()"><span id="tic">🌙</span><span id="tlb">Dark Mode</span></button>
+  </div>
+</aside>
+<div class="sb-ov" id="sb-ov" onclick="closeSB()"></div>
+
+<!-- MAIN -->
+<main class="mc" id="mc">
+  <header class="topbar">
+    <button class="menu-btn" onclick="toggleSB()">☰</button>
+    <div class="tb-ttl" id="ptitle">Dashboard</div>
+    <div class="tb-act">
+      <div class="mo-sel"><label>Month:</label><input type="month" id="gmo" onchange="onMoChange()"/></div>
+      <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+      <div class="acct-chip"><span>👤 <b id="acct-email">—</b></span><button class="acct-out" onclick="handleLogout()">Logout</button></div>
+    </div>
+  </header>
+
+  <div class="pc" id="pc">
+
+    <!-- DASHBOARD -->
+    <section id="pg-dashboard" class="page act">
+      <div class="ph">
+        <div><h2>Dashboard</h2><p class="ph-sub">Summary for <span id="dml">—</span></p></div>
+      </div>
+      <div class="kpi-g">
+        <div class="kpi k-bl"><div class="kpi-ic">👥</div><div><div class="kpi-lb">Total Employees</div><div class="kpi-vl" id="k-emp">0</div></div></div>
+        <div class="kpi k-gr"><div class="kpi-ic">💵</div><div><div class="kpi-lb">Total Gross</div><div class="kpi-vl" id="k-gr">₹0</div></div></div>
+        <div class="kpi k-or"><div class="kpi-ic">🏦</div><div><div class="kpi-lb">Total PF</div><div class="kpi-vl" id="k-pf">₹0</div></div></div>
+        <div class="kpi k-pu"><div class="kpi-ic">🏥</div><div><div class="kpi-lb">Total ESI</div><div class="kpi-vl" id="k-esi">₹0</div></div></div>
+        <div class="kpi k-rd"><div class="kpi-ic">⏰</div><div><div class="kpi-lb">Total Overtime</div><div class="kpi-vl" id="k-ot">₹0</div></div></div>
+        <div class="kpi k-tl"><div class="kpi-ic">💳</div><div><div class="kpi-lb">Total Net Salary</div><div class="kpi-vl" id="k-net">₹0</div></div></div>
+      </div>
+      <div class="dg">
+        <div class="dc">
+          <div class="ct">Eligibility Overview</div>
+          <div class="elr"><span>PF Eligible</span><div class="elbw"><div class="elb b-pf" id="pfbar"></div></div><span id="pfc">0</span></div>
+          <div class="elr"><span>ESI Eligible</span><div class="elbw"><div class="elb b-esi" id="esibar"></div></div><span id="esic2">0</span></div>
+          <div class="elr"><span>Total</span><div class="elbw"><div class="elb b-tot" style="width:100%"></div></div><span id="totc">0</span></div>
+        </div>
+        <div class="dc"><div class="ct">Compliance Alerts</div><div class="dal" id="dal"></div></div>
+        <div class="dc"><div class="ct">Salary Breakdown</div><div class="bkl" id="bkl"></div></div>
+        <div class="dc"><div class="ct">Department Headcount</div><div class="dpl" id="dpl"></div></div>
+      </div>
+    </section>
+
+    <!-- EMPLOYEE MASTER -->
+    <section id="pg-employees" class="page">
+      <div class="ph">
+        <h2>Employee Master</h2>
+        <div class="pa">
+          <button class="btn bp" onclick="openEmpMo()">+ Add Employee</button>
+          <button class="btn bg2" onclick="openImportMo()">📥 Bulk Import Excel</button>
+          <button class="btn bor" onclick="expEmpXL()">⬇ Export XLSX</button>
+          <button class="btn bo" onclick="dlTemplate()">📄 Download Template</button>
+        </div>
+      </div>
+      <div class="fb">
+        <input class="si" id="emp-s" placeholder="Search name, code, dept, UAN..." oninput="rendEmp()"/>
+        <select class="sei" id="emp-df" onchange="rendEmp()"><option value="">All Departments</option></select>
+      </div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>Code</th><th>Photo</th><th>Name</th><th>Father's Name</th><th>Designation</th><th>Dept</th><th>DOJ</th><th>UAN</th><th>ESIC No</th><th>Mobile</th><th>Actions</th></tr></thead>
+          <tbody id="emp-tb"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- EMPLOYEE CARDS -->
+    <section id="pg-empcards" class="page">
+      <div class="ph">
+        <h2>Employee ID Cards</h2>
+        <div class="pa">
+          <button class="btn bd2" onclick="printAllCards()">🖨️ Print All Cards</button>
+        </div>
+      </div>
+      <div class="emp-card-grid" id="emp-card-grid"></div>
+    </section>
+
+    <!-- ATTENDANCE -->
+    <section id="pg-attendance" class="page">
+      <div class="ph">
+        <h2>Attendance Entry</h2>
+        <div class="pa">
+          <button class="btn bp" onclick="openAttMo()">+ Add Entry</button>
+          <button class="btn bg2" onclick="expAttXL()">⬇ Export XLSX</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb">
+        <input type="month" class="sei" id="att-mf" onchange="rendAtt()"/>
+        <input class="si" id="att-s" placeholder="Search employee..." oninput="rendAtt()"/>
+      </div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>Code</th><th>Name</th><th>Month</th><th>Working</th><th>Present</th><th>Weekly Off</th><th>Paid Leave</th><th>Holiday</th><th>LOP</th><th>OT Hrs</th><th>OT Rate</th><th>Actions</th></tr></thead>
+          <tbody id="att-tb"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SALARY STRUCTURE -->
+    <section id="pg-salstruct" class="page">
+      <div class="ph">
+        <h2>Salary Structure</h2>
+        <div class="pa">
+          <button class="btn bp" onclick="openSSMo()">+ Add/Edit</button>
+          <button class="btn bg2" onclick="expSSXL()">⬇ Export XLSX</button>
+        </div>
+      </div>
+      <div class="fb"><input class="si" id="ss-s" placeholder="Search employee..." oninput="rendSS()"/></div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>Code</th><th>Name</th><th>Basic</th><th>HRA</th><th>Medical</th><th>Other</th><th>OT Rate (₹/hr)</th><th>Auto OT Rate</th><th>Gross</th><th>Actions</th></tr></thead>
+          <tbody id="ss-tb"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SALARY PROCESSING -->
+    <section id="pg-salproc" class="page">
+      <div class="ph">
+        <h2>Salary Processing</h2>
+        <div class="pa">
+          <button class="btn bp" onclick="procSal()">⚙️ Process Month</button>
+          <button class="btn bg2" onclick="expProcXL()">⬇ Export XLSX</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb"><input type="month" class="sei" id="proc-m" onchange="rendProc()"/></div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>Code</th><th>Name</th><th>Account No</th><th>IFSC</th><th>Designation</th><th>UAN</th><th>ESI No</th><th>Total Working</th><th>Total Salary</th><th>Basic</th><th>HRA</th><th>Other Allow</th><th>Gross</th><th>Present Days</th><th>OT Hours</th><th>OT Rate</th><th>OT Salary</th><th>Total+OT</th><th>EPF(12%)</th><th>ESI(0.75%)</th><th>Income Tax</th><th>Advance</th><th>Net Pay</th></tr></thead>
+          <tbody id="proc-tb"></tbody>
+          <tfoot id="proc-tf"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAY SLIP -->
+    <section id="pg-payslip" class="page">
+      <div class="ph">
+        <h2>Pay Slip Generation</h2>
+        <div class="pa">
+          <button class="btn bd2" onclick="printSlip()">🖨️ Print Slip</button>
+          <button class="btn bg2" onclick="expSlipPDF()">⬇ Download PDF</button>
+        </div>
+      </div>
+      <div class="fb">
+        <select class="sei" id="ps-emp" onchange="rendSlip()" style="min-width:220px"></select>
+        <input type="month" class="sei" id="ps-m" onchange="rendSlip()"/>
+      </div>
+      <div id="payslip-wrap"></div>
+    </section>
+
+    <!-- LETTERHEAD -->
+    <section id="pg-letterhead" class="page">
+      <div class="ph">
+        <h2>Company Letterhead</h2>
+        <div class="pa">
+          <button class="btn bd2" onclick="printLH()">🖨️ Print</button>
+          <button class="btn bg2" onclick="expLHPDF()">⬇ Download PDF</button>
+        </div>
+      </div>
+      <div class="ib">Yeh ek blank official letterhead hai — logo aur company details header me set hain. Neeche wale box me letter likhein, phir Print / PDF le sakte hain.</div>
+      <div id="letterhead-wrap"></div>
+    </section>
+
+    <!-- SALARY REGISTER -->
+    <section id="pg-salreg" class="page">
+      <div class="ph"><h2>Salary Register</h2>
+        <div class="pa">
+          <button class="btn bg2" onclick="expSRXL()">⬇ XLSX</button>
+          <button class="btn bd2" onclick="expSRPDF()">⬇ PDF</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb"><input type="month" class="sei" id="sr-m" onchange="rendSR()"/></div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>#</th><th>Code</th><th>Name</th><th>Designation</th><th>Gross</th><th>OT Salary</th><th>Total+OT</th><th>EPF</th><th>ESI</th><th>Advance</th><th>Income Tax</th><th>Net Pay</th></tr></thead>
+          <tbody id="sr-tb"></tbody><tfoot id="sr-tf"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- PF REGISTER -->
+    <section id="pg-pfreg" class="page">
+      <div class="ph"><h2>PF Register</h2>
+        <div class="pa">
+          <button class="btn bg2" onclick="expPFRXL()">⬇ XLSX</button>
+          <button class="btn bd2" onclick="expPFRPDF()">⬇ PDF</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb"><input type="month" class="sei" id="pfr-m" onchange="rendPFR()"/></div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>#</th><th>Code</th><th>Name</th><th>UAN</th><th>PF Wages</th><th>Emp PF</th><th>Er PF</th><th>EPS</th><th>Er EPF</th><th>Total</th></tr></thead>
+          <tbody id="pfr-tb"></tbody><tfoot id="pfr-tf"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- ESI REGISTER -->
+    <section id="pg-esireg" class="page">
+      <div class="ph"><h2>ESI Register</h2>
+        <div class="pa">
+          <button class="btn bg2" onclick="expESIRXL()">⬇ XLSX</button>
+          <button class="btn bd2" onclick="expESIRPDF()">⬇ PDF</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb"><input type="month" class="sei" id="esir-m" onchange="rendESIR()"/></div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>#</th><th>ESIC No</th><th>Name</th><th>Gross</th><th>Days Worked</th><th>Emp ESI(0.75%)</th><th>Er ESI(3.25%)</th><th>Total ESI</th></tr></thead>
+          <tbody id="esir-tb"></tbody><tfoot id="esir-tf"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- EPFO ECR -->
+    <section id="pg-ecr" class="page">
+      <div class="ph"><h2>EPFO ECR – Government Format</h2>
+        <div class="pa">
+          <button class="btn bg2" onclick="expECRTXT()">⬇ Download ECR .txt (Govt Format)</button>
+          <button class="btn bg2" onclick="expECRXL()">⬇ Export XLSX</button>
+          <button class="btn bd2" onclick="expECRPDF()">⬇ Export PDF</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="ecr-info">
+        ⚠️ <strong>EPFO ECR Format:</strong> As per Ministry of Labour & Employment, Govt. of India. Upload this file at <strong>https://unifiedportal-emp.epfindia.gov.in</strong>
+      </div>
+      <div class="fb">
+        <input type="month" class="sei" id="ecr-m" onchange="rendECR()"/>
+        <span id="ecr-wage-month" style="font-size:.8rem;color:var(--t2);align-self:center"></span>
+      </div>
+      <!-- ECR Header -->
+      <div class="dc" style="margin-bottom:14px" id="ecr-header-box">
+        <div class="ct">ECR File Header</div>
+        <div style="font-size:.78rem;color:var(--t2);line-height:1.8" id="ecr-hdr-text"></div>
+      </div>
+      <div class="tw">
+        <table class="dt">
+          <thead>
+            <tr>
+              <th>Sr</th><th>UAN</th><th>Member Name</th><th>Gross Wages</th><th>EPF Wages</th><th>EPS Wages</th>
+              <th>EDLI Wages</th><th>EPF Contribution (EE)</th><th>EPS Contribution</th><th>EPF Contribution (ER)</th>
+              <th>NCP Days</th><th>Refund of Advances</th>
+            </tr>
+          </thead>
+          <tbody id="ecr-tb"></tbody><tfoot id="ecr-tf"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- BANK TRANSFER -->
+    <section id="pg-bank" class="page">
+      <div class="ph"><h2>Bank Advice / Transfer Sheet</h2>
+        <div class="pa">
+          <button class="btn bg2" onclick="expBankXL()">⬇ Export XLSX</button>
+          <button class="btn bd2" onclick="expBankPDF()">⬇ Export PDF</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb"><input type="month" class="sei" id="bank-m" onchange="rendBank()"/></div>
+      <!-- Bank Advice Header -->
+      <div class="dc" style="margin-bottom:14px" id="bank-advice-header">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:1.1rem;font-weight:700" id="ba-co-name"></div>
+            <div style="font-size:.8rem;color:var(--t2)" id="ba-co-addr"></div>
+          </div>
+          <div style="text-align:right;font-size:.82rem;color:var(--t2)">
+            <div><strong>Bank Advice – Salary Payment</strong></div>
+            <div id="ba-month"></div>
+            <div>Date: <span id="ba-date"></span></div>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:.78rem;color:var(--t2);border-top:1px solid var(--bdr);padding-top:8px">
+          <span id="ba-bank-info"></span>
+        </div>
+      </div>
+      <div class="tw">
+        <table class="dt" id="bank-tbl">
+          <thead><tr><th>Sr No</th><th>Emp Code</th><th>Employee Name</th><th>Designation</th><th>Bank Name</th><th>Account No</th><th>IFSC Code</th><th>Net Salary (₹)</th><th>Remarks</th></tr></thead>
+          <tbody id="bank-tb"></tbody>
+          <tfoot id="bank-tf"></tfoot>
+        </table>
+      </div>
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;padding:16px;background:var(--card);border-radius:var(--r);box-shadow:var(--sh)">
+        <div style="text-align:center"><div style="border-top:1px solid var(--t1);margin-top:30px;padding-top:6px;font-size:.78rem;color:var(--t2)">Prepared By</div></div>
+        <div style="text-align:center"><div style="border-top:1px solid var(--t1);margin-top:30px;padding-top:6px;font-size:.78rem;color:var(--t2)">Accounts / Finance</div></div>
+        <div style="text-align:center"><div style="border-top:1px solid var(--t1);margin-top:30px;padding-top:6px;font-size:.78rem;color:var(--t2)">Authorized Signatory</div></div>
+      </div>
+    </section>
+
+    <!-- OVERTIME -->
+    <section id="pg-otreg" class="page">
+      <div class="ph"><h2>Overtime Register</h2>
+        <div class="pa">
+          <button class="btn bg2" onclick="expOTXL()">⬇ XLSX</button>
+          <button class="btn bo" onclick="window.print()">🖨️ Print</button>
+        </div>
+      </div>
+      <div class="fb"><input type="month" class="sei" id="ot-m" onchange="rendOT()"/></div>
+      <div class="tw">
+        <table class="dt">
+          <thead><tr><th>#</th><th>Code</th><th>Name</th><th>Basic</th><th>Hourly Rate</th><th>OT Rate(×2)</th><th>OT Hours</th><th>OT Salary</th></tr></thead>
+          <tbody id="ot-tb"></tbody><tfoot id="ot-tf"></tfoot>
+        </table>
+      </div>
+    </section>
+
+    <!-- ALERTS -->
+    <section id="pg-alerts" class="page">
+      <div class="ph"><h2>Compliance Alerts</h2></div>
+      <div class="ac" id="ac"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="pg-settings" class="page">
+      <div class="ph"><h2>Company Settings</h2></div>
+      <div style="max-width:700px">
+        <div class="dc" style="margin-bottom:16px">
+          <div class="ct">💾 Backup &amp; Restore Data</div>
+          <div class="co-sub">Poora data (Employees, Salary Structure, Attendance, Processed Salaries, Company Info) ek JSON file mein save/restore karein — laptop badalne ya data loss se bachne ke liye.</div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+            <button class="btn bp" onclick="downloadBackup()">⬇️ Download Backup (JSON)</button>
+            <button class="btn bo" onclick="document.getElementById('restore-file').click()">⬆️ Restore from Backup</button>
+            <input type="file" id="restore-file" accept="application/json,.json" style="display:none" onchange="restoreBackup(this.files[0])"/>
+          </div>
+          <div id="backup-info" style="font-size:.75rem;color:var(--t2);margin-top:10px"></div>
+          <div style="font-size:.72rem;color:var(--tr,#c0392b);margin-top:6px">⚠️ Restore karne se mojooda data (employees, attendance, processed salaries) <strong>overwrite</strong> ho jayega. Restore se pehle current data ka bhi backup le lein.</div>
+        </div>
+        <div class="dc" style="margin-bottom:16px">
+          <div class="ct">Company Information</div>
+          <div class="co-sub">This information appears on Pay Slips and Reports</div>
+          <div class="fg">
+            <div class="fgr fw"><label>Company Name *</label><input id="co-name" placeholder="e.g. Neelkanth Biotech" oninput="saveCo()"/></div>
+            <div class="fgr fw"><label>Address Line 1</label><input id="co-addr1" placeholder="Ward No. 04, Near Shani Mandir..." oninput="saveCo()"/></div>
+            <div class="fgr fw"><label>Address Line 2</label><input id="co-addr2" placeholder="Professor Colony, Una, Himachal Pradesh – 174303" oninput="saveCo()"/></div>
+            <div class="fgr"><label>PF Registration No</label><input id="co-pf" placeholder="DLCPM0026839000" oninput="saveCo()"/></div>
+            <div class="fgr"><label>ESIC Code</label><input id="co-esic" placeholder="41000142230000000" oninput="saveCo()"/></div>
+            <div class="fgr"><label>Establishment Code</label><input id="co-est" placeholder="MH/BAN/12345" oninput="saveCo()"/></div>
+            <div class="fgr"><label>Bank Name</label><input id="co-bank" placeholder="State Bank of India" oninput="saveCo()"/></div>
+            <div class="fgr"><label>Phone</label><input id="co-phone" placeholder="+91 98765 43210" oninput="saveCo()"/></div>
+            <div class="fgr"><label>Mobile No</label><input id="co-mobile" placeholder="+91 98765 43210" oninput="saveCo()"/></div>
+            <div class="fgr"><label>Email ID</label><input id="co-email" type="email" placeholder="info@company.com" oninput="saveCo()"/></div>
+            <div class="fgr"><label>GST No</label><input id="co-gst" placeholder="06ABCDE1234F1Z5" oninput="saveCo()"/></div>
+            <div class="fgr"><label>Udyam Registration No</label><input id="co-udyam" placeholder="UDYAM-HP-00-0000000" oninput="saveCo()"/></div>
+          </div>
+        </div>
+        <div class="dc">
+          <div class="ct">Company Logo / Header Image</div>
+          <div class="fgr">
+            <label>Upload Logo (shown on pay slips)</label>
+            <input type="file" id="co-logo-file" accept="image/*" onchange="uploadLogo()"/>
+          </div>
+          <div id="logo-preview" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- MODALS -->
+<!-- Employee Modal -->
+<div class="mo" id="emp-mo">
+  <div class="md lg">
+    <div class="mh"><h3 id="emp-mot">Add Employee</h3><button class="mcl" onclick="closeEmpMo()">✕</button></div>
+    <div class="mb">
+      <div style="text-align:center;margin-bottom:16px">
+        <div class="photo-upload" id="photo-preview" onclick="document.getElementById('photo-file').click()">
+          <span>📷</span><span>Photo</span>
+        </div>
+        <input type="file" id="photo-file" accept="image/*" style="display:none" onchange="uploadPhoto()"/>
+        <div style="font-size:.72rem;color:var(--t2);margin-top:4px">Click to upload photo</div>
+      </div>
+      <input type="hidden" id="fe-photo"/>
+      <div class="fg">
+        <div class="fgr"><label>Employee Code *</label><input id="fe-code" placeholder="EMP001"/></div>
+        <div class="fgr"><label>Employee Name *</label><input id="fe-name" placeholder="Full Name"/></div>
+        <div class="fgr"><label>Father's Name</label><input id="fe-fa" placeholder="Father's Name"/></div>
+        <div class="fgr"><label>Date of Birth</label><input type="date" id="fe-dob"/></div>
+        <div class="fgr"><label>Date of Joining *</label><input type="date" id="fe-doj"/></div>
+        <div class="fgr"><label>Designation</label><input id="fe-des" placeholder="Helper"/></div>
+        <div class="fgr"><label>Department</label><input id="fe-dept" placeholder="Production" list="dlist"/><datalist id="dlist"><option value="IT"><option value="HR"><option value="Finance"><option value="Operations"><option value="Production"><option value="Sales"><option value="Admin"><option value="Quality"><option value="Store"></datalist></div>
+        <div class="fgr"><label>UAN Number</label><input id="fe-uan" placeholder="12-digit UAN" maxlength="12"/></div>
+        <div class="fgr"><label>ESIC Number</label><input id="fe-esic" placeholder="ESIC Number"/></div>
+        <div class="fgr" style="grid-column:1/-1;background:var(--info);border:1px solid var(--bd);border-radius:8px;padding:10px 12px">
+          <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-weight:600">
+            <input type="checkbox" id="fe-exempt" style="width:16px;height:16px;margin-top:2px"/>
+            <span>Temporary Employee – Not Covered under EPF &amp; ESI</span>
+          </label>
+          <div style="font-size:.72rem;color:var(--t2);margin-top:4px;margin-left:24px">Salary Register mein aayega, lekin ESI/PF Register &amp; ECR se bahar rahega aur ESI/PF kaate nahi jayenge.</div>
+        </div>
+        <div class="fgr"><label>Aadhaar Number</label><input id="fe-aad" placeholder="12-digit Aadhaar" maxlength="12"/></div>
+        <div class="fgr"><label>PAN Number</label><input id="fe-pan" placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase"/></div>
+        <div class="fgr"><label>Bank Account No</label><input id="fe-bacc" placeholder="Account Number"/></div>
+        <div class="fgr"><label>Bank Name</label><input id="fe-bname" placeholder="ICICI Bank"/></div>
+        <div class="fgr"><label>IFSC Code</label><input id="fe-ifsc" placeholder="ICIC0001234" style="text-transform:uppercase"/></div>
+        <div class="fgr"><label>Mobile Number</label><input type="tel" id="fe-mob" placeholder="10-digit mobile" maxlength="10"/></div>
+        <div class="fgr"><label>Email</label><input type="email" id="fe-email" placeholder="email@example.com"/></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bo" onclick="closeEmpMo()">Cancel</button><button class="btn bp" onclick="saveEmp()">Save Employee</button></div>
+  </div>
+</div>
+
+<!-- Bulk Import Modal -->
+<div class="mo" id="import-mo">
+  <div class="md lg">
+    <div class="mh"><h3>Bulk Import Employees from Excel</h3><button class="mcl" onclick="closeMo('import-mo')">✕</button></div>
+    <div class="mb">
+      <div class="ib">
+        📋 <strong>Required Columns (exact order):</strong> Employee Code | Employee Name | Father's Name | Date of Birth | Date of Joining | Designation | Department | UAN No | ESIC No | Aadhaar | PAN | Bank Account | Bank Name | IFSC Code | Mobile | Email
+      </div>
+      <div class="import-zone" id="import-zone" onclick="document.getElementById('xl-file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+        <span class="iz-ic">📊</span>
+        <p>Drag & Drop your Excel file here, or <span>Browse</span></p>
+        <p style="margin-top:6px;font-size:.75rem">Supports: .xlsx, .xls, .csv</p>
+      </div>
+      <input type="file" id="xl-file" accept=".xlsx,.xls,.csv" style="display:none" onchange="handleXLImport()"/>
+      <div class="import-preview" id="import-preview">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <strong id="import-count"></strong>
+          <button class="btn bp" onclick="confirmImport()">✅ Confirm Import</button>
+        </div>
+        <div class="tw" style="max-height:300px;overflow:auto">
+          <table class="dt" id="import-table">
+            <thead><tr><th>Code</th><th>Name</th><th>Designation</th><th>Dept</th><th>UAN</th><th>ESIC</th><th>Mobile</th></tr></thead>
+            <tbody id="import-tb"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bo" onclick="closeMo('import-mo')">Close</button></div>
+  </div>
+</div>
+
+<!-- Attendance Modal -->
+<div class="mo" id="att-mo">
+  <div class="md">
+    <div class="mh"><h3 id="att-mot">Add Attendance</h3><button class="mcl" onclick="closeMo('att-mo')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fgr"><label>Month *</label><input type="month" id="am-m" onchange="syncWDToMonth()"/></div>
+        <div class="fgr"><label>Employee *</label><select id="am-emp" style="width:100%"></select></div>
+        <div class="fgr"><label>Total Working Days</label><input type="number" id="am-wd" value="26" min="0" max="31" oninput="valAtt()"/></div>
+        <div class="fgr"><label>Present Days</label><input type="number" id="am-pr" value="26" min="0" max="31" oninput="valAtt()"/></div>
+        <div class="fgr"><label>Weekly Off</label><input type="number" id="am-wo" value="0" min="0" oninput="valAtt()"/></div>
+        <div class="fgr"><label>Paid Leave</label><input type="number" id="am-lv" value="0" min="0" oninput="valAtt()"/></div>
+        <div class="fgr"><label>Holiday</label><input type="number" id="am-hd" value="0" min="0" oninput="valAtt()"/></div>
+        <div class="fgr"><label>LOP Days (auto)</label><input type="number" id="am-lop" value="0" readonly class="ro"/></div>
+        <div class="fgr"><label>Overtime Hours</label><input type="number" id="am-ot" value="0" min="0" step="0.5"/></div>
+        <div class="fgr"><label>OT Rate (₹/hr) <span style="color:var(--tm);font-weight:400;font-size:.75rem">Override for this month only</span></label><input type="number" id="am-otr" value="0" min="0" step="0.01" placeholder="0 = use Salary Structure rate"/></div>
+        <div class="fgr"><label>Advance Deduction (₹)</label><input type="number" id="am-adv" value="0" min="0"/></div>
+        <div class="fgr"><label>Loan Recovery (₹)</label><input type="number" id="am-loan" value="0" min="0"/></div>
+        <div class="fgr"><label>Income Tax (₹)</label><input type="number" id="am-tax" value="0" min="0"/></div>
+      </div>
+      <div id="av-msg" class="vm"></div>
+    </div>
+    <div class="mf"><button class="btn bo" onclick="closeMo('att-mo')">Cancel</button><button class="btn bp" onclick="saveAtt()">Save</button></div>
+  </div>
+</div>
+
+<!-- Salary Structure Modal -->
+<div class="mo" id="ss-mo">
+  <div class="md">
+    <div class="mh"><h3 id="ss-mot">Salary Structure</h3><button class="mcl" onclick="closeMo('ss-mo')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fgr fw"><label>Employee *</label><select id="sm-emp" style="width:100%" onchange="autoFillSS()"></select></div>
+        <div class="fgr"><label>Basic Wage (₹) *</label><input type="number" id="sm-ba" min="0" oninput="cg()"/></div>
+        <div class="fgr"><label>HRA (₹)</label><input type="number" id="sm-hr" value="0" min="0" oninput="cg()"/></div>
+        <div class="fgr"><label>Medical Allowance (₹)</label><input type="number" id="sm-md" value="0" min="0" oninput="cg()"/></div>
+        <div class="fgr"><label>Other Allowance (₹)</label><input type="number" id="sm-ot" value="0" min="0" oninput="cg()"/></div>
+        <div class="fgr"><label>OT Rate (₹/hr) <span style="color:var(--tm);font-weight:400;font-size:.75rem">Manual – leave 0 for auto (Gross÷30÷8×2)</span></label><input type="number" id="sm-otr" value="0" min="0" step="0.01" placeholder="0 = auto-calculate"/></div>
+        <div class="fgr fw"><label>Auto OT Rate (preview)</label><input type="number" id="sm-otr-auto" readonly class="ro" title="This rate is used if OT Rate above is 0"/></div>
+        <div class="fgr fw"><label>Gross Salary (Auto)</label><input type="number" id="sm-gr" readonly class="ro"/></div>
+      </div>
+    </div>
+    <div class="mf"><button class="btn bo" onclick="closeMo('ss-mo')">Cancel</button><button class="btn bp" onclick="saveSS()">Save Structure</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+// ── CONSTANTS ──
+const PFC=15000,PER=.12,EPR=.0833,EER=.0075,ESR=.0325,ESC=21000,WD=26;
+
+// ── COMPANY CONFIG ──
+let co={name:"Neelkanth Biotech",addr1:"Ward No. 04, Near Shani Mandir, Shailja Vihar",addr2:"Professor Colony, Una, Himachal Pradesh – 174303",pf:"",esic:"",est:"",bank:"ICICI Bank",phone:"",mobile:"",email:"",gst:"",udyam:"",logo:""};
+
+// ── SAMPLE DATA ──
+const SE=[
+  {code:"EMP001",name:"Sharvan Kumar",fa:"Ram Kumar",dob:"1992-06-05",doj:"2026-06-05",des:"Helper",dept:"Production",uan:"",esic:"1418200510",aad:"123412341234",pan:"NA",bacc:"4301524041",bname:"ICICI Bank",ifsc:"ICIC0004301",mob:"9876543210",email:"sharvan@example.com",photo:""},
+  {code:"EMP002",name:"Rajesh Kumar Sharma",fa:"Suresh Sharma",dob:"1985-03-12",doj:"2018-01-15",des:"Senior Manager",dept:"IT",uan:"100123456789",esic:"3400100123456",aad:"234523452345",pan:"ABCRS1234F",bacc:"123456789012",bname:"SBI",ifsc:"SBIN0001234",mob:"9765432109",email:"rajesh@example.com",photo:""},
+  {code:"EMP003",name:"Priya Devi Gupta",fa:"Ramesh Gupta",dob:"1990-07-25",doj:"2019-05-10",des:"HR Executive",dept:"HR",uan:"100234567890",esic:"3400100234567",aad:"345634563456",pan:"BCDPG2345G",bacc:"234567890123",bname:"HDFC",ifsc:"HDFC0002345",mob:"9654321098",email:"priya@example.com",photo:""},
+  {code:"EMP004",name:"Mohammed Aslam Khan",fa:"Abdul Khan",dob:"1988-11-05",doj:"2017-08-20",des:"Accounts Officer",dept:"Finance",uan:"100345678901",esic:"3400100345678",aad:"456745674567",pan:"CDQMK3456H",bacc:"345678901234",bname:"ICICI Bank",ifsc:"ICIC0003456",mob:"9543210987",email:"aslam@example.com",photo:""},
+  {code:"EMP005",name:"Sunita Rani Verma",fa:"Mohan Verma",dob:"1992-04-18",doj:"2020-11-01",des:"Production Operator",dept:"Production",uan:"100456789012",esic:"3400100456789",aad:"567856785678",pan:"",bacc:"456789012345",bname:"PNB",ifsc:"PUNB0004567",mob:"9432109876",email:"sunita@example.com",photo:""},
+  {code:"EMP006",name:"Dinesh Prasad Tiwari",fa:"Shiv Tiwari",dob:"1984-06-10",doj:"2015-09-01",des:"General Manager",dept:"Operations",uan:"100789012345",esic:"",aad:"789078907890",pan:"GHQDT7890L",bacc:"789012345678",bname:"SBI",ifsc:"SBIN0007890",mob:"9321098765",email:"dinesh@example.com",photo:""},
+];
+const SS2=[
+  {ec:"EMP001",ba:16000,hr:0,md:0,ot:0},
+  {ec:"EMP002",ba:35000,hr:14000,md:1250,ot:2000},
+  {ec:"EMP003",ba:22000,hr:8800,md:1250,ot:1000},
+  {ec:"EMP004",ba:28000,hr:11200,md:1250,ot:1500},
+  {ec:"EMP005",ba:12000,hr:4800,md:500,ot:500},
+  {ec:"EMP006",ba:55000,hr:22000,md:1250,ot:5000},
+];
+function buildSA(){
+  const m=gCM();
+  return[
+    {m,ec:"EMP001",wd:26,pr:20,wo:0,lv:0,hd:0,lop:6,ot:44,adv:3000,loan:0,tax:0},
+    {m,ec:"EMP002",wd:26,pr:24,wo:2,lv:0,hd:0,lop:0,ot:8,adv:0,loan:0,tax:2500},
+    {m,ec:"EMP003",wd:26,pr:25,wo:1,lv:0,hd:0,lop:0,ot:4,adv:2000,loan:0,tax:0},
+    {m,ec:"EMP004",wd:26,pr:22,wo:2,lv:2,hd:0,lop:0,ot:0,adv:0,loan:0,tax:800},
+    {m,ec:"EMP005",wd:26,pr:26,wo:0,lv:0,hd:0,lop:0,ot:16,adv:500,loan:0,tax:0},
+    {m,ec:"EMP006",wd:26,pr:23,wo:2,lv:1,hd:0,lop:0,ot:0,adv:0,loan:0,tax:5000},
+  ];
+}
+
+// ── STATE ──
+let emps=ld("pp_e")||SE;
+let sals=ld("pp_s")||SS2;
+let atts=ld("pp_a")||buildSA();
+let procs=ld("pp_p")||[];
+let eIdx=null,aIdx=null,sIdx=null;
+let importBuf=[];
+
+function esc(s){return s==null?"":String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function escAttr(s){return esc(s).replace(/`/g,"&#96;")}
+const CLOUD_KEYS=["pp_e","pp_s","pp_a","pp_p","pp_co"];
+function sv(k,v){
+  try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}
+  if(CLOUD_KEYS.includes(k)&&currentUser)cloudSaveDebounced();
+}
+function ld(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch(e){return null}}
+function persist(){sv("pp_e",emps);sv("pp_s",sals);sv("pp_a",atts);sv("pp_p",procs)}
+
+// ── FIREBASE AUTH & CLOUD SYNC ──
+const firebaseConfig={
+  apiKey:"AIzaSyDkwMAzI6nT7_Qzc2rm0LDxM-wc9pODD9c",
+  authDomain:"payroll-sdsr.firebaseapp.com",
+  projectId:"payroll-sdsr",
+  storageBucket:"payroll-sdsr.firebasestorage.app",
+  messagingSenderId:"708991806028",
+  appId:"1:708991806028:web:1d46499b4bbac20dd222e9",
+  measurementId:"G-CYWC8WKYJ2"
+};
+firebase.initializeApp(firebaseConfig);
+const fbAuth=firebase.auth();
+const fbDb=firebase.firestore();
+let currentUser=null;
+let cloudSaveTimer=null;
+let cloudSaving=false;
+let suppressCloudSave=false;
+
+function authMsg(text,type){
+  const el=_id("auth-msg");
+  if(!el)return;
+  if(!text){el.style.display="none";el.className="auth-msg";return}
+  el.textContent=text;el.className="auth-msg "+(type==="ok"?"ok":"err");
+}
+function switchAuthTab(which){
+  authMsg("");
+  _id("tab-login").classList.toggle("act",which==="login");
+  _id("tab-register").classList.toggle("act",which==="register");
+  _id("pane-login").classList.toggle("act",which==="login");
+  _id("pane-register").classList.toggle("act",which==="register");
+}
+function setAuthBusy(btnId,busy,label){
+  const b=_id(btnId);if(!b)return;
+  b.disabled=busy;b.textContent=busy?"Please wait...":label;
+}
+function fbErrMsg(err){
+  const c=err&&err.code||"";
+  const map={
+    "auth/email-already-in-use":"Ye email pehle se registered hai — Login tab use karein.",
+    "auth/invalid-email":"Email sahi format me nahi hai.",
+    "auth/weak-password":"Password kam se kam 6 character ka hona chahiye.",
+    "auth/user-not-found":"Ye email registered nahi hai. Pehle Registration karein.",
+    "auth/wrong-password":"Password galat hai.",
+    "auth/invalid-credential":"Email ya Password galat hai.",
+    "auth/too-many-requests":"Bahut zyada attempts ho gaye — thodi der baad try karein.",
+    "auth/network-request-failed":"Internet connection check karein."
+  };
+  return map[c]||(err&&err.message)||"Kuch galat ho gaya, dobara try karein.";
+}
+function handleRegister(){
+  const coName=(_id("rg-co").value||"").trim();
+  const email=(_id("rg-email").value||"").trim();
+  const pass=_id("rg-pass").value||"";
+  const pass2=_id("rg-pass2").value||"";
+  authMsg("");
+  if(!coName){authMsg("Company/Firm ka naam likhein.");return}
+  if(!email){authMsg("Email likhein.");return}
+  if(pass.length<6){authMsg("Password kam se kam 6 character ka hona chahiye.");return}
+  if(pass!==pass2){authMsg("Password match nahi kar raha.");return}
+  setAuthBusy("rg-btn",true,"Account Banayein");
+  fbAuth.createUserWithEmailAndPassword(email,pass).then(async cred=>{
+    const uid=cred.user.uid;
+    const localHasData=ld("pp_e")!==null;
+    if(!localHasData){
+      emps=[];sals=[];atts=[];procs=[];
+      co={name:coName,addr1:"",addr2:"",pf:"",esic:"",est:"",bank:"",phone:"",mobile:"",email:email,gst:"",udyam:"",logo:""};
+    }else{
+      co.name=coName||co.name;
+    }
+    suppressCloudSave=true;
+    persist();sv("pp_co",co);
+    suppressCloudSave=false;
+    await fbDb.collection("companies").doc(uid).set({
+      companyName:coName,email:email,
+      blob:JSON.stringify(buildBackupObj()),
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    setAuthBusy("rg-btn",false,"Account Banayein");
+    toast("Account ban gaya! Welcome, "+coName);
+  }).catch(err=>{
+    setAuthBusy("rg-btn",false,"Account Banayein");
+    authMsg(fbErrMsg(err));
+  });
+}
+function handleLogin(){
+  const email=(_id("li-email").value||"").trim();
+  const pass=_id("li-pass").value||"";
+  authMsg("");
+  if(!email||!pass){authMsg("Email aur Password dono bharein.");return}
+  setAuthBusy("li-btn",true,"Login");
+  fbAuth.signInWithEmailAndPassword(email,pass).catch(err=>{
+    setAuthBusy("li-btn",false,"Login");
+    authMsg(fbErrMsg(err));
+  });
+}
+function handleForgotPassword(){
+  const email=(_id("li-email").value||"").trim();
+  if(!email){authMsg("Pehle apna email likhein, phir 'Password bhool gaye' dabayein.");return}
+  fbAuth.sendPasswordResetEmail(email).then(()=>{
+    authMsg("Password reset link "+email+" par bhej diya gaya hai.","ok");
+  }).catch(err=>authMsg(fbErrMsg(err)));
+}
+function handleLogout(){
+  if(!confirm("Kya aap logout karna chahte hain?"))return;
+  fbAuth.signOut();
+}
+function cloudSaveDebounced(){
+  if(suppressCloudSave||!currentUser)return;
+  clearTimeout(cloudSaveTimer);
+  cloudSaveTimer=setTimeout(cloudSaveNow,1500);
+}
+function cloudSaveNow(){
+  if(!currentUser)return;
+  cloudSaving=true;
+  fbDb.collection("companies").doc(currentUser.uid).set({
+    companyName:co.name||"",
+    blob:JSON.stringify(buildBackupObj()),
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  },{merge:true}).catch(err=>{console.error("Cloud save failed:",err)}).finally(()=>{cloudSaving=false});
+}
+function hydrateFromCloudData(data){
+  if(!data)return;
+  if(Array.isArray(data.employees))emps=data.employees;
+  if(Array.isArray(data.salaryStructures))sals=data.salaryStructures;
+  if(Array.isArray(data.attendance))atts=data.attendance;
+  if(Array.isArray(data.processedSalaries))procs=data.processedSalaries;
+  if(data.company&&typeof data.company==="object")co=Object.assign({},co,data.company);
+}
+function startAppFor(user){
+  currentUser=user;
+  _id("acct-email").textContent=user.email||"";
+  document.body.classList.remove("not-authed");
+  document.body.classList.add("authed");
+  initApp();
+}
+fbAuth.onAuthStateChanged(user=>{
+  if(user){
+    fbDb.collection("companies").doc(user.uid).get().then(docSnap=>{
+      suppressCloudSave=true;
+      if(docSnap.exists){
+        const d=docSnap.data();
+        if(d&&d.blob){
+          try{hydrateFromCloudData(JSON.parse(d.blob))}catch(e){console.error("Blob parse failed",e)}
+        }
+      }
+      persist();sv("pp_co",co);
+      suppressCloudSave=false;
+      startAppFor(user);
+    }).catch(err=>{
+      suppressCloudSave=false;
+      console.error("Cloud load failed:",err);
+      toast("Cloud data load nahi ho paya, local data use kar rahe hain.","te");
+      startAppFor(user);
+    });
+  }else{
+    currentUser=null;
+    document.body.classList.remove("authed");
+    document.body.classList.add("not-authed");
+  }
+});
+["li-email","li-pass"].forEach(id=>{
+  const el=_id(id);
+  if(el)el.addEventListener("keydown",ev=>{if(ev.key==="Enter")handleLogin()});
+});
+["rg-co","rg-email","rg-pass","rg-pass2"].forEach(id=>{
+  const el=_id(id);
+  if(el)el.addEventListener("keydown",ev=>{if(ev.key==="Enter")handleRegister()});
+});
+
+// ── BACKUP & RESTORE ──
+const BACKUP_VERSION=1;
+function buildBackupObj(){
+  return{
+    _app:"EPFO_ESIC_Pro",
+    _version:BACKUP_VERSION,
+    _exportedAt:new Date().toISOString(),
+    company:co,
+    employees:emps,
+    salaryStructures:sals,
+    attendance:atts,
+    processedSalaries:procs
+  };
+}
+function downloadBackup(){
+  try{
+    const data=buildBackupObj();
+    const txt=JSON.stringify(data,null,2);
+    const blob=new Blob([txt],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const dt=new Date();const stamp=`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,"0")}-${String(dt.getDate()).padStart(2,"0")}_${String(dt.getHours()).padStart(2,"0")}${String(dt.getMinutes()).padStart(2,"0")}`;
+    const a=document.createElement("a");a.href=url;
+    a.download=`${(co.name||"Payroll").replace(/[^a-zA-Z0-9]+/g,"_")}_Backup_${stamp}.json`;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    sv("pp_lastbackup",dt.toISOString());
+    updateBackupInfo();
+    toast("Backup downloaded! Ise safe jagah save kar lein.");
+  }catch(err){toast("Backup failed: "+err.message,"te")}
+}
+function restoreBackup(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    let data;
+    try{data=JSON.parse(e.target.result)}catch(err){toast("Invalid file: JSON parse nahi ho payi.","te");_id("restore-file").value="";return}
+    if(!data||typeof data!=="object"){toast("Invalid backup file.","te");_id("restore-file").value="";return}
+    const hasAny=data.employees||data.salaryStructures||data.attendance||data.processedSalaries||data.company;
+    if(!hasAny){toast("Ye backup file EPFO ESIC Pro ki nahi lagti — koi valid data nahi mila.","te");_id("restore-file").value="";return}
+    const empCount=Array.isArray(data.employees)?data.employees.length:0;
+    const msg=`Restore karne se mojooda data OVERWRITE ho jayega:\n\n`+
+      `• Employees: ${empCount}\n`+
+      `• Salary Structures: ${Array.isArray(data.salaryStructures)?data.salaryStructures.length:0}\n`+
+      `• Attendance Records: ${Array.isArray(data.attendance)?data.attendance.length:0}\n`+
+      `• Processed Salary Rows: ${Array.isArray(data.processedSalaries)?data.processedSalaries.length:0}\n`+
+      (data._exportedAt?`\nBackup Date: ${new Date(data._exportedAt).toLocaleString("en-IN")}\n`:"")+
+      `\nKya aap sure hain? Ye action undo nahi ho sakta.`;
+    if(!confirm(msg)){_id("restore-file").value="";return}
+    try{
+      if(Array.isArray(data.employees))emps=data.employees;
+      if(Array.isArray(data.salaryStructures))sals=data.salaryStructures;
+      if(Array.isArray(data.attendance))atts=data.attendance;
+      if(Array.isArray(data.processedSalaries))procs=data.processedSalaries;
+      if(data.company&&typeof data.company==="object")co=Object.assign({},co,data.company);
+      persist();sv("pp_co",co);
+      if(currentUser){
+        clearTimeout(cloudSaveTimer);
+        cloudSaveNow();
+      }
+      toast("Data restore ho gaya! Page refresh ho raha hai...");
+      setTimeout(()=>location.reload(),1400);
+    }catch(err){toast("Restore failed: "+err.message,"te")}
+    _id("restore-file").value="";
+  };
+  reader.onerror=()=>{toast("File read nahi ho payi.","te");_id("restore-file").value=""};
+  reader.readAsText(file);
+}
+function updateBackupInfo(){
+  const el=_id("backup-info");if(!el)return;
+  const last=ld("pp_lastbackup");
+  el.textContent=last?`Last backup: ${new Date(last).toLocaleString("en-IN")}`:"Abhi tak koi backup nahi liya gaya.";
+}
+
+// ── HELPERS ──
+const _id=id=>document.getElementById(id);
+const fmt=n=>"₹"+(Math.round(n)||0).toLocaleString("en-IN");
+const r2=n=>Math.round(n*100)/100;
+function gCM(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`}
+function daysInMonth(m){const[y,mo]=String(m).split("-");return new Date(+y,+mo,0).getDate()} // actual calendar days: 28/29/30/31
+function fmtM(m){if(!m)return"—";const[y,mo]=m.split("-");return new Date(y,mo-1,1).toLocaleString("en-IN",{month:"long",year:"numeric"})}
+const gE=c=>emps.find(e=>e.code===c);
+const gSS=c=>sals.find(s=>s.ec===c);
+const gAtt=(c,m)=>atts.find(a=>a.ec===c&&a.m===m);
+const gGross=ss=>((ss.ba||0)+(ss.hr||0)+(ss.md||0)+(ss.ot||0));
+const otRateCalc=ss=>Math.round(((gGross(ss)/30)/8)*2);
+function gOT(ss,h,manualRate){
+  const r=(manualRate!=null&&manualRate!==""&&+manualRate>0)?+manualRate:(ss.otr!=null&&ss.otr!==""&&+ss.otr>0?+ss.otr:otRateCalc(ss));
+  return r2(r*h);
+}
+function gPF(gross,basic){
+  const pw=basic; // PF on Earned/Prorated Basic Salary
+  const epsWage=Math.min(pw,PFC); // EPS Wage is statutorily capped at Rs.15,000
+  const epf=Math.round(pw*12/100),erpf=Math.round(pw*12/100),eps=Math.round(epsWage*8.33/100),eepf=erpf-eps;
+  return{pw,epsWage,epf,erpf,eps,eepf,tot:epf+erpf};
+}
+// Build a PF object from an already-processed row (procOne output) instead of recalculating on full Basic
+const pfFromP=p=>({pw:p.pw,epsWage:Math.min(p.pw,PFC),epf:p.empPF,erpf:p.erPF,eps:p.eps,eepf:p.erEPF,tot:p.empPF+p.erPF});
+function gESI(total){
+  // ROUND((Total+OT)*0.75%,0) — eligibility decided separately by Salary Structure Gross <=21000
+  const ee=Math.round(total*0.75/100),er=Math.round(total*3.25/100);
+  return{ee,er,tot:ee+er};
+}
+// Build an ESI object from an already-processed row (procOne output) instead of recalculating on full Gross
+const esiFromP=p=>p.esiElig?{ee:p.empESI,er:p.erESI,tot:p.empESI+p.erESI}:null;
+function procOne(ec,m){
+  const emp=gE(ec),ss=gSS(ec),att=gAtt(ec,m);
+  if(!emp||!ss||!att)return null;
+  const gross=gGross(ss);
+  const pr=att.pr||0, wd=att.wd||26;
+  // Earned salary → prorated on FIXED Standard Working Days (26), not the entered Total Working Days.
+  // pr==26 → full salary. pr<26 → deduction (absent). pr>26 → extra salary for extra days worked.
+  const earned = r2(gross * (pr/WD));
+  // OT Salary
+  const effRate=(att.otr!=null&&att.otr!==""&&+att.otr>0)?+att.otr:(ss.otr!=null&&ss.otr!==""&&+ss.otr>0?+ss.otr:otRateCalc(ss));
+  const otSal=gOT(ss,att.ot||0,effRate);
+  // PF/ESI: skipped entirely for Temporary employees not covered under EPF/ESI (pfEsiExempt)
+  const isExempt=!!emp.pfEsiExempt;
+  // PF → on Earned/Prorated Basic Salary (ROUND(Earned Basic*12/100,0)), prorated on Standard 26 days
+  const earnedBasic = r2(ss.ba*(pr/WD));
+  const pf=isExempt?{pw:0,epf:0,erpf:0,eps:0,eepf:0,tot:0}:gPF(gross, earnedBasic);
+  // ESI → on Total Salary + OT (Earned Gross + OT Salary), threshold ₹21000
+  const totalForESI = r2(earned+otSal);
+  // ESI eligibility: Salary Structure Gross Salary must be <=21000 (permanent status),
+  // AND this month's Total Salary+OT must also be <=21000 — else no ESI that month.
+  const esi=(!isExempt&&gross<=ESC)?gESI(totalForESI):null;
+  const empPF=pf.epf, empESI=esi?esi.ee:0;
+  const adv=att.adv||0, tax=att.tax||0, loan=att.loan||0;
+  const net=r2(earned+otSal-empPF-empESI-tax-adv-loan);
+  const lop=wd-pr-(att.wo||0)-(att.lv||0)-(att.hd||0);
+  return{m,ec,gross,earned,otSal,empPF,erPF:pf.erpf,eps:pf.eps,erEPF:pf.eepf,pw:pf.pw,empESI,erESI:esi?esi.er:0,esiElig:!!esi,totalForESI,tax,adv,loan,net,pr,wd,ot:att.ot||0,lop:Math.max(0,lop),otRate:effRate,pfEsiExempt:isExempt};
+}
+function enforceExempt(rows){
+  // Always enforce the CURRENT employee-master exempt flag, even on rows that were
+  // processed/cached before the flag was set — so ticking "Temporary" takes effect
+  // immediately everywhere without requiring the user to re-run "Process Month".
+  return rows.map(r=>{
+    const e=gE(r.ec);
+    if(e&&e.pfEsiExempt&&(r.empPF||r.empESI||r.erPF||r.eps||r.erEPF||r.pw)){
+      const net=r2(r.earned+r.otSal-r.tax-r.adv-r.loan);
+      return{...r,empPF:0,erPF:0,eps:0,erEPF:0,pw:0,empESI:0,erESI:0,esiElig:false,net,pfEsiExempt:true};
+    }
+    return e?{...r,pfEsiExempt:!!e.pfEsiExempt}:r;
+  });
+}
+function getRows(m){
+  const p=procs.filter(x=>x.m===m);
+  const rows=p.length?p:atts.filter(a=>a.m===m).map(a=>procOne(a.ec,m)).filter(Boolean);
+  return enforceExempt(rows);
+}
+function V(id){return _id(id)?_id(id).value.trim():""}
+function V2(id){return _id(id)?_id(id).value||0:0}
+function setV(id,v){const el=_id(id);if(el)el.value=v}
+
+// ── NAVIGATION ──
+const NAV_LABELS={dashboard:"Dashboard",employees:"Employee Master",empcards:"Employee Cards",attendance:"Attendance",salstruct:"Salary Structure",salproc:"Salary Processing",payslip:"Pay Slip",letterhead:"Letterhead",salreg:"Salary Register",pfreg:"PF Register",esireg:"ESI Register",ecr:"EPFO ECR",bank:"Bank Transfer Sheet",otreg:"Overtime Register",alerts:"Compliance Alerts",settings:"Company Settings"};
+function nav(p){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("act"));
+  document.querySelectorAll(".ni").forEach(x=>x.classList.remove("act"));
+  const pg=_id("pg-"+p);if(pg)pg.classList.add("act");
+  const ni=document.querySelector(`.ni[data-p="${p}"]`);
+  if(ni){ni.classList.add("act");_id("ptitle").textContent=NAV_LABELS[p]||p}
+  const m=_id("gmo").value||gCM();
+  ({
+    dashboard:rendDash,employees:rendEmp,empcards:rendCards,attendance:rendAtt,
+    salstruct:rendSS,salproc:()=>{setV("proc-m",m);rendProc()},
+    payslip:()=>{setV("ps-m",m);popEmpSel("ps-emp",null);rendSlip()},
+    letterhead:rendLH,
+    salreg:()=>{setV("sr-m",m);rendSR()},pfreg:()=>{setV("pfr-m",m);rendPFR()},
+    esireg:()=>{setV("esir-m",m);rendESIR()},ecr:()=>{setV("ecr-m",m);rendECR()},
+    bank:()=>{setV("bank-m",m);rendBank()},otreg:()=>{setV("ot-m",m);rendOT()},
+    alerts:rendAlerts,settings:()=>{loadCoFields();updateBackupInfo()}
+  }[p]||function(){})();
+  if(window.innerWidth<900)closeSB();
+}
+function toggleSB(){_id("sb").classList.toggle("open");_id("sb-ov").classList.toggle("open")}
+function closeSB(){_id("sb").classList.remove("open");_id("sb-ov").classList.remove("open")}
+function onMoChange(){nav(getActP())}
+function getActP(){const a=document.querySelector(".ni.act");return a?a.dataset.p:"dashboard"}
+function closeMo(id){_id(id).classList.remove("open")}
+
+// ── TOAST ──
+function toast(msg,t="ts"){const el=_id("toast");el.textContent=msg;el.className=`toast show ${t}`;setTimeout(()=>el.className="toast",3200)}
+
+// ── THEME ──
+function toggleTheme(){
+  const h=document.documentElement,dark=h.getAttribute("data-theme")==="dark";
+  h.setAttribute("data-theme",dark?"light":"dark");
+  _id("tic").textContent=dark?"🌙":"☀️";_id("tlb").textContent=dark?"Dark Mode":"Light Mode";
+  sv("pp_th",dark?"light":"dark");
+}
+
+// ── COMPANY SETTINGS ──
+function loadCoFields(){
+  ["name","addr1","addr2","pf","esic","est","bank","phone","mobile","email","gst","udyam"].forEach(k=>{const el=_id("co-"+k);if(el)el.value=co[k]||""});
+  if(co.logo)_id("logo-preview").innerHTML=`<img src="${co.logo}" style="max-height:80px;border-radius:6px;margin-top:8px"/>`;
+  _id("co-short").textContent=co.name||"PayrollPro";
+}
+function saveCo(){
+  ["name","addr1","addr2","pf","esic","est","bank","phone","mobile","email","gst","udyam"].forEach(k=>{const el=_id("co-"+k);if(el)co[k]=el.value});
+  _id("co-short").textContent=co.name||"PayrollPro";
+  sv("pp_co",co);
+}
+function uploadLogo(){
+  const f=_id("co-logo-file").files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{co.logo=e.target.result;sv("pp_co",co);loadCoFields()};r.readAsDataURL(f);
+}
+
+// ── DASHBOARD ──
+function rendDash(){
+  const m=_id("gmo").value||gCM();
+  _id("dml").textContent=fmtM(m);
+  let tg=0,tpf=0,tesi=0,tot2=0,tnet=0,pfe=0,esie=0;
+  emps.forEach(e=>{
+    const ss=gSS(e.code);if(!ss)return;
+    const g=gGross(ss);tg+=g;
+    const att=gAtt(e.code,m);
+    const p2=att?procOne(e.code,m):null;
+    const eb=att?r2(ss.ba*((att.pr||0)/WD)):ss.ba;
+    const pf=p2?{tot:p2.empPF+p2.erPF}:gPF(g,eb);tpf+=pf.tot;pfe++;
+    const esi=p2?(p2.esiElig?{tot:p2.empESI+p2.erESI}:null):(g<=ESC?gESI(g):null);
+    if(esi){tesi+=esi.tot;esie++}
+    if(p2){tot2+=p2.otSal;tnet+=p2.net}
+  });
+  _id("k-emp").textContent=emps.length;_id("k-gr").textContent=fmt(tg);_id("k-pf").textContent=fmt(tpf);
+  _id("k-esi").textContent=fmt(tesi);_id("k-ot").textContent=fmt(tot2);_id("k-net").textContent=fmt(tnet);
+  const T=emps.length||1;
+  _id("pfbar").style.width=`${(pfe/T)*100}%`;_id("esibar").style.width=`${(esie/T)*100}%`;
+  _id("pfc").textContent=pfe;_id("esic2").textContent=esie;_id("totc").textContent=T;
+  const ad=getAlerts();
+  _id("dal").innerHTML=[
+    {lb:`Missing UAN (${ad.nu.length})`,cl:"dr"},{lb:`Missing ESIC (${ad.ne.length})`,cl:"do"},
+    {lb:`Missing Aadhaar (${ad.na.length})`,cl:"do"},{lb:`Missing PAN (${ad.np.length})`,cl:"do"},
+    {lb:`PF Eligible (${ad.pfe.length})`,cl:"db"},{lb:`ESI Eligible (${ad.esie.length})`,cl:"dg3"}
+  ].map(a=>`<div class="dai"><span class="dot ${a.cl}"></span>${a.lb}</div>`).join("");
+  _id("bkl").innerHTML=[{l:"Gross",v:fmt(tg)},{l:"PF (Total)",v:fmt(tpf)},{l:"ESI (Total)",v:fmt(tesi)},{l:"Overtime",v:fmt(tot2)},{l:"Net Salary",v:fmt(tnet)}]
+    .map(r=>`<div class="brr"><span style="color:var(--t2)">${r.l}</span><span style="font-weight:700">${r.v}</span></div>`).join("");
+  const depts={};emps.forEach(e=>{depts[e.dept]=(depts[e.dept]||0)+1});
+  _id("dpl").innerHTML=Object.entries(depts).sort((a,b)=>b[1]-a[1]).map(([d,c])=>`<div class="dpr"><span>${d}</span><span class="dc2">${c}</span></div>`).join("");
+  _id("abadge").textContent=ad.nu.length+ad.ne.length+ad.na.length+ad.np.length;
+}
+
+// ── EMPLOYEES ──
+function rendEmp(){
+  const s=(V("emp-s")||"").toLowerCase();
+  const df=_id("emp-df");const depts=[...new Set(emps.map(e=>e.dept))].sort();
+  const cv=df.value;
+  df.innerHTML=`<option value="">All Departments</option>`+depts.map(d=>`<option value="${d}"${d===cv?" selected":""}>${d}</option>`).join("");
+  const f=emps.filter(e=>{
+    const m2=`${e.code} ${e.name} ${e.dept} ${e.des} ${e.uan}`.toLowerCase().includes(s);
+    return m2&&(!cv||e.dept===cv);
+  });
+  _id("emp-tb").innerHTML=f.length?f.map(e=>`<tr>
+    <td><strong>${esc(e.code)}</strong></td>
+    <td><div style="width:34px;height:34px;border-radius:50%;overflow:hidden;background:#e2e8f0;display:flex;align-items:center;justify-content:center;font-size:1.1rem">${e.photo?`<img src="${e.photo}" style="width:100%;height:100%;object-fit:cover"/>`:"👤"}</div></td>
+    <td>${esc(e.name)}${e.pfEsiExempt?' <span class="bno" style="background:var(--or);color:#fff;font-size:.62rem;padding:2px 6px;border-radius:4px;vertical-align:middle">TEMP – No PF/ESI</span>':''}</td><td>${esc(e.fa)||"—"}</td><td>${esc(e.des)||"—"}</td><td>${esc(e.dept)||"—"}</td><td>${esc(e.doj)||"—"}</td>
+    <td>${e.pfEsiExempt?'<span style="color:var(--tm)">—</span>':(e.uan?esc(e.uan):'<span class="bno">Missing</span>')}</td><td>${e.pfEsiExempt?'<span style="color:var(--tm)">—</span>':(e.esic?esc(e.esic):'<span class="bno">Missing</span>')}</td><td>${esc(e.mob)||"—"}</td>
+    <td><button class="bic" onclick="openEmpMo('${escAttr(e.code)}')">✏️</button><button class="bic" onclick="delEmp('${escAttr(e.code)}')">🗑️</button></td>
+  </tr>`).join(""):`<tr><td colspan="11" style="padding:36px;text-align:center;color:var(--tm)"><span style="font-size:2rem;display:block;margin-bottom:8px">👥</span>No employees found.</td></tr>`;
+}
+function popEmpSel(id,sel){
+  const el=_id(id);if(!el)return;
+  el.innerHTML=emps.map(e=>`<option value="${e.code}"${e.code===sel?" selected":""}>${e.code} – ${e.name}</option>`).join("");
+}
+function openEmpMo(code=null){
+  eIdx=code===null?null:emps.findIndex(e=>e.code===code);
+  if(code!==null&&eIdx===-1){toast("Employee not found. Please refresh and try again.","te");return}
+  const idx=eIdx;
+  _id("emp-mot").textContent=idx!==null?"Edit Employee":"Add Employee";
+  _id("photo-preview").innerHTML=`<span>📷</span><span>Photo</span>`;
+  _id("fe-photo").value="";
+  if(idx!==null){
+    const e=emps[idx];
+    setV("fe-code",e.code);setV("fe-name",e.name);setV("fe-fa",e.fa||"");setV("fe-dob",e.dob||"");setV("fe-doj",e.doj||"");
+    setV("fe-des",e.des||"");setV("fe-dept",e.dept||"");setV("fe-uan",e.uan||"");setV("fe-esic",e.esic||"");
+    setV("fe-aad",e.aad||"");setV("fe-pan",e.pan||"");setV("fe-bacc",e.bacc||"");setV("fe-bname",e.bname||"");
+    setV("fe-ifsc",e.ifsc||"");setV("fe-mob",e.mob||"");setV("fe-email",e.email||"");
+    _id("fe-exempt").checked=!!e.pfEsiExempt;
+    _id("fe-photo").value=e.photo||"";
+    if(e.photo){_id("photo-preview").innerHTML=`<img src="${e.photo}"/>`;}
+  } else {["fe-code","fe-name","fe-fa","fe-dob","fe-doj","fe-des","fe-dept","fe-uan","fe-esic","fe-aad","fe-pan","fe-bacc","fe-bname","fe-ifsc","fe-mob","fe-email"].forEach(id=>setV(id,""));_id("fe-exempt").checked=false;}
+  _id("emp-mo").classList.add("open");
+}
+function closeEmpMo(){_id("emp-mo").classList.remove("open")}
+function uploadPhoto(){
+  const f=_id("photo-file").files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{_id("fe-photo").value=e.target.result;_id("photo-preview").innerHTML=`<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover"/>`};r.readAsDataURL(f);
+}
+function saveEmp(){
+  const code=V("fe-code"),name=V("fe-name"),doj=V("fe-doj");
+  if(!code||!name||!doj){toast("Code, Name & DOJ required","te");return}
+  if(eIdx===null&&emps.find(e=>e.code===code)){toast("Employee code already exists!","te");return}
+  const e={code,name,fa:V("fe-fa"),dob:V("fe-dob"),doj,des:V("fe-des"),dept:V("fe-dept"),uan:V("fe-uan"),esic:V("fe-esic"),aad:V("fe-aad"),pan:V("fe-pan").toUpperCase(),bacc:V("fe-bacc"),bname:V("fe-bname"),ifsc:V("fe-ifsc").toUpperCase(),mob:V("fe-mob"),email:V("fe-email"),pfEsiExempt:_id("fe-exempt").checked,photo:_id("fe-photo").value||""};
+  if(eIdx!==null)emps[eIdx]=e;else emps.push(e);
+  persist();closeEmpMo();rendEmp();rendDash();
+  toast(eIdx!==null?"Employee updated!":"Employee added!");eIdx=null;
+}
+function delEmp(code){const i=emps.findIndex(e=>e.code===code);if(i===-1)return;if(!confirm(`Delete "${emps[i].name}"?`))return;emps.splice(i,1);persist();rendEmp();rendDash();toast("Employee deleted.","ti")}
+function expEmpXL(){
+  expXL([["Code","Name","Father","DOB","DOJ","Designation","Dept","UAN","ESIC","Aadhaar","PAN","Bank Acc","Bank Name","IFSC","Mobile","Email"],
+    ...emps.map(e=>[e.code,e.name,e.fa,e.dob,e.doj,e.des,e.dept,e.uan,e.esic,e.aad,e.pan,e.bacc,e.bname,e.ifsc,e.mob,e.email])],"Employees");
+}
+function dlTemplate(){
+  expXL([["Employee Code","Employee Name","Father's Name","Date of Birth","Date of Joining","Designation","Department","UAN No","ESIC No","Aadhaar","PAN","Bank Account","Bank Name","IFSC Code","Mobile","Email"],
+    ["EMP001","Sample Employee","Father Name","1990-01-01","2024-01-01","Helper","Production","","","","","","ICICI Bank","","+919876543210",""]],
+  "Employee_Import_Template");
+  toast("Template downloaded!");
+}
+
+// ── BULK IMPORT ──
+function openImportMo(){_id("import-preview").style.display="none";importBuf=[];_id("import-mo").classList.add("open")}
+function handleDrop(e){e.preventDefault();_id("import-zone").classList.remove("drag");const f=e.dataTransfer.files[0];if(f)processXLFile(f)}
+function handleXLImport(){const f=_id("xl-file").files[0];if(f)processXLFile(f)}
+function processXLFile(f){
+  if(!window.XLSX){toast("XLSX library not ready","te");return}
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const wb=XLSX.read(ev.target.result,{type:"binary"});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const data=XLSX.utils.sheet_to_json(ws,{header:1});
+      const rows=data.slice(1).filter(r=>r[0]&&r[1]);
+      importBuf=rows.map(r=>({
+        code:String(r[0]||"").trim(),name:String(r[1]||"").trim(),fa:String(r[2]||"").trim(),
+        dob:r[3]?String(r[3]).trim():"",doj:r[4]?String(r[4]).trim():"",des:String(r[5]||"").trim(),
+        dept:String(r[6]||"").trim(),uan:String(r[7]||"").trim(),esic:String(r[8]||"").trim(),
+        aad:String(r[9]||"").trim(),pan:String(r[10]||"").trim(),bacc:String(r[11]||"").trim(),
+        bname:String(r[12]||"").trim(),ifsc:String(r[13]||"").trim(),mob:String(r[14]||"").trim(),
+        email:String(r[15]||"").trim(),photo:""
+      }));
+      _id("import-count").textContent=`Found ${importBuf.length} employees`;
+      _id("import-tb").innerHTML=importBuf.map(e=>`<tr><td>${e.code}</td><td>${e.name}</td><td>${e.des}</td><td>${e.dept}</td><td>${e.uan||"—"}</td><td>${e.esic||"—"}</td><td>${e.mob}</td></tr>`).join("");
+      _id("import-preview").style.display="block";
+    }catch(err){toast("Error reading file: "+err.message,"te")}
+  };
+  r.readAsBinaryString(f);
+}
+function confirmImport(){
+  if(!importBuf.length){toast("No data to import","te");return}
+  let added=0,skipped=0;
+  importBuf.forEach(e=>{
+    if(emps.find(ex=>ex.code===e.code)){skipped++}
+    else{emps.push(e);added++}
+  });
+  persist();closeMo("import-mo");rendEmp();rendDash();
+  toast(`Imported: ${added} added, ${skipped} skipped (duplicate codes)`);
+  importBuf=[];
+}
+
+// ── EMPLOYEE CARDS ──
+function rendCards(){
+  _id("emp-card-grid").innerHTML=emps.map((e,i)=>{
+    const ss=gSS(e.code);const gross=ss?gGross(ss):0;
+    const initial=e.name.split(" ").map(w=>w[0]).join("").substring(0,2).toUpperCase();
+    return`<div class="emp-card">
+      <div class="emp-card-header">
+        <div class="emp-card-photo">${e.photo?`<img src="${e.photo}"/>`:`<span>${initial}</span>`}</div>
+        <div>
+          <div class="emp-card-name">${e.name}</div>
+          <div class="emp-card-des">${e.des||"—"}</div>
+          <div class="emp-card-code">${e.code}</div>
+        </div>
+      </div>
+      <div class="emp-card-body">
+        <div class="emp-card-row"><span class="emp-card-label">Department</span><span class="emp-card-val">${e.dept||"—"}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">DOJ</span><span class="emp-card-val">${e.doj||"—"}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">UAN</span><span class="emp-card-val">${e.uan||'<span class="bno">Missing</span>'}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">ESIC No</span><span class="emp-card-val">${e.esic||'<span class="bno">Missing</span>'}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">PAN</span><span class="emp-card-val">${e.pan||"—"}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">Mobile</span><span class="emp-card-val">${e.mob||"—"}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">Bank A/C</span><span class="emp-card-val">${e.bacc||"—"}</span></div>
+        <div class="emp-card-row"><span class="emp-card-label">Gross Salary</span><span class="emp-card-val" style="font-weight:700;color:var(--gn)">${fmt(gross)}</span></div>
+      </div>
+      <div class="emp-card-footer">
+        <button class="btn bo" style="font-size:.72rem;padding:5px 10px" onclick="printCard(${i})">🖨️ Print Card</button>
+        <button class="btn bd2" style="font-size:.72rem;padding:5px 10px" onclick="genCardPDF(${i})">⬇ PDF</button>
+      </div>
+    </div>`;
+  }).join("")||`<div style="padding:40px;text-align:center;color:var(--tm)"><span style="font-size:2rem;display:block;margin-bottom:8px">🪪</span>No employees found.</div>`;
+}
+function printCard(i){const e=emps[i];if(!e)return;const w=window.open("","_blank");w.document.write(buildCardHTML(e));w.document.close();w.onload=()=>{w.print();w.close()}}
+function genCardPDF(i){
+  const e=emps[i];if(!e)return;
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({unit:"mm",format:[85.6,54]});
+  doc.setFillColor(30,41,59);doc.rect(0,0,85.6,22,"F");
+  if(e.photo){try{doc.addImage(e.photo,"JPEG",3,3,16,16,undefined,"FAST")}catch(er){}}
+  doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont(undefined,"bold");doc.text(e.name,22,8);
+  doc.setFontSize(6);doc.setFont(undefined,"normal");doc.text(e.des||"",22,13);doc.text(e.code,22,18);
+  doc.setTextColor(0,0,0);doc.setFontSize(6);
+  let y=26;
+  [["Dept",e.dept],["DOJ",e.doj],["UAN",e.uan||"—"],["ESIC",e.esic||"—"],["Mobile",e.mob],["Bank A/C",e.bacc]].forEach(([l,v])=>{
+    doc.setFont(undefined,"bold");doc.text(l+":",3,y);doc.setFont(undefined,"normal");doc.text(String(v||"—"),22,y);y+=5;
+  });
+  doc.setFillColor(30,41,59);doc.rect(0,50,85.6,4,"F");
+  doc.setTextColor(255,255,255);doc.setFontSize(5);doc.text(co.name,3,53);
+  doc.save("Card_"+e.code+".pdf");toast("Card PDF downloaded!");
+}
+function buildCardHTML(e){
+  const gross=gSS(e.code)?fmt(gGross(gSS(e.code))):"—";
+  const initial=e.name.split(" ").map(w=>w[0]).join("").substring(0,2).toUpperCase();
+  return`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ID Card – ${e.name}</title><style>
+  body{margin:0;padding:20px;font-family:'Segoe UI',sans-serif;background:#f0f4f8}
+  .card{width:340px;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.2);background:#fff;margin:auto}
+  .ch{background:linear-gradient(135deg,#1e293b,#334155);padding:20px;display:flex;align-items:center;gap:14px}
+  .cp{width:65px;height:65px;border-radius:50%;border:3px solid rgba(255,255,255,.4);overflow:hidden;background:#475569;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;flex-shrink:0}
+  .cp img{width:100%;height:100%;object-fit:cover}
+  .cn{color:#fff;font-size:1rem;font-weight:700}.cd{color:#94a3b8;font-size:.72rem;margin-top:2px}.cc{background:rgba(255,255,255,.12);color:#fff;font-size:.68rem;padding:2px 8px;border-radius:10px;margin-top:5px;display:inline-block}
+  .cb{padding:16px}
+  .cr{display:flex;gap:8px;margin-bottom:7px;font-size:.78rem}
+  .cl{color:#475569;min-width:80px;font-weight:600}.cv{color:#0f172a}
+  .cf{background:#1e293b;padding:8px 16px;text-align:center;color:#fff;font-size:.7rem}
+  @media print{body{background:#fff;padding:0}.card{box-shadow:none}}
+  </style></head><body>
+  <div class="card">
+    <div class="ch">
+      <div class="cp">${e.photo?`<img src="${e.photo}"/>`:`<span>${initial}</span>`}</div>
+      <div><div class="cn">${e.name}</div><div class="cd">${e.des||"—"}</div><div class="cc">${e.code}</div></div>
+    </div>
+    <div class="cb">
+      ${[["Department",e.dept],["Date of Joining",e.doj],["UAN No",e.uan||"—"],["ESIC No",e.esic||"—"],["PAN",e.pan||"—"],["Mobile",e.mob||"—"],["Bank A/C",e.bacc||"—"],["Gross Salary",gross]].map(([l,v])=>`<div class="cr"><span class="cl">${l}</span><span class="cv">${v}</span></div>`).join("")}
+    </div>
+    <div class="cf">${co.name} | ${co.addr1||""}</div>
+  </div></body></html>`;
+}
+function printAllCards(){
+  const w=window.open("","_blank");
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{margin:0;padding:16px;font-family:'Segoe UI',sans-serif;background:#fff}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media print{.grid{grid-template-columns:repeat(3,1fr)}}` +
+  `.card{border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;break-inside:avoid}.ch{background:linear-gradient(135deg,#1e293b,#334155);padding:14px;display:flex;align-items:center;gap:10px}.cp{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.3);overflow:hidden;background:#475569;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;flex-shrink:0}.cp img{width:100%;height:100%;object-fit:cover}.cn{color:#fff;font-size:.82rem;font-weight:700}.cd{color:#94a3b8;font-size:.65rem;margin-top:1px}.cc{background:rgba(255,255,255,.1);color:#fff;font-size:.6rem;padding:1px 6px;border-radius:8px;margin-top:3px;display:inline-block}.cb{padding:10px}.cr{display:flex;gap:6px;margin-bottom:4px;font-size:.66rem}.cl{color:#475569;min-width:60px;font-weight:600}.cv{color:#0f172a}.cf{background:#1e293b;padding:5px 10px;text-align:center;color:#fff;font-size:.6rem}
+  </style></head><body><div class="grid">`+
+  emps.map(e=>{const gross=gSS(e.code)?fmt(gGross(gSS(e.code))):"—";const initial=e.name.split(" ").map(w=>w[0]).join("").substring(0,2).toUpperCase();
+  return`<div class="card"><div class="ch"><div class="cp">${e.photo?`<img src="${e.photo}"/>`:`<span>${initial}</span>`}</div><div><div class="cn">${e.name}</div><div class="cd">${e.des||"—"}</div><div class="cc">${e.code}</div></div></div><div class="cb">`+
+  [["Dept",e.dept],["DOJ",e.doj],["UAN",e.uan||"—"],["ESIC",e.esic||"—"],["Mobile",e.mob||"—"],["Bank",e.bacc||"—"]].map(([l,v])=>`<div class="cr"><span class="cl">${l}</span><span class="cv">${v}</span></div>`).join("")+
+  `</div><div class="cf">${co.name}</div></div>`}).join("")+
+  `</div></body></html>`);w.document.close();w.onload=()=>{w.print();}
+}
+
+// ── ATTENDANCE ──
+function rendAtt(){
+  const m=_id("att-mf")?.value||"";
+  const s=(V("att-s")||"").toLowerCase();
+  const f=atts.filter(a=>{if(m&&a.m!==m)return false;const e=gE(a.ec);return!s||(e&&e.name.toLowerCase().includes(s))||a.ec.toLowerCase().includes(s)});
+  _id("att-tb").innerHTML=f.length?f.map(a=>{const e=gE(a.ec);const i=atts.indexOf(a);
+    const ss2=gSS(a.ec);const effR=(a.otr&&+a.otr>0)?+a.otr:(ss2?.otr&&+ss2.otr>0?+ss2.otr:(ss2?otRateCalc(ss2):0));
+    return`<tr><td>${a.ec}</td><td>${e?.name||"—"}</td><td>${fmtM(a.m)}</td><td>${a.wd}</td><td>${a.pr}</td><td>${a.wo}</td><td>${a.lv}</td><td>${a.hd}</td><td>${a.lop||0}</td><td>${a.ot}</td><td>₹${effR.toFixed(2)}${a.otr&&+a.otr>0?' <span style="color:var(--or);font-size:.68rem">(manual)</span>':''}</td>
+    <td><button class="bic" onclick="openAttMo(${i})">✏️</button><button class="bic" onclick="delAtt(${i})">🗑️</button></td></tr>`;
+  }).join(""):`<tr><td colspan="11" style="padding:36px;text-align:center;color:var(--tm)"><span style="font-size:2rem;display:block;margin-bottom:8px">📅</span>No attendance records.</td></tr>`;
+}
+function openAttMo(idx=null){
+  aIdx=idx;const m=_id("gmo").value||gCM();
+  _id("att-mot").textContent=idx!==null?"Edit Attendance":"Add Attendance";
+  popEmpSel("am-emp",idx!==null?atts[idx].ec:emps[0]?.code);
+  if(idx!==null){const a=atts[idx];const ss=gSS(a.ec);const defOTR=ss?(ss.otr&&+ss.otr>0?+ss.otr:otRateCalc(ss)):0;setV("am-m",a.m);setV("am-wd",a.wd);setV("am-pr",a.pr);setV("am-wo",a.wo);setV("am-lv",a.lv);setV("am-hd",a.hd);setV("am-ot",a.ot);setV("am-otr",a.otr||0);setV("am-adv",a.adv||0);setV("am-loan",a.loan||0);setV("am-tax",a.tax||0);calcLOP()}
+  else{const ss=gSS(emps[0]?.code);const dim=daysInMonth(m);setV("am-m",m);setV("am-wd",dim);setV("am-pr",dim);setV("am-wo",0);setV("am-lv",0);setV("am-hd",0);setV("am-ot",0);setV("am-otr",0);setV("am-adv",0);setV("am-loan",0);setV("am-tax",0);setV("am-lop",0)}
+  _id("av-msg").textContent="";_id("att-mo").classList.add("open");
+}
+function calcLOP(){const wd=+V2("am-wd"),pr=+V2("am-pr"),wo=+V2("am-wo"),lv=+V2("am-lv"),hd=+V2("am-hd");const lop=Math.max(0,wd-pr-wo-lv-hd);setV("am-lop",lop)}
+function syncWDToMonth(){
+  // Only auto-fill for NEW records (aIdx===null); don't overwrite wd/pr when editing an existing saved record.
+  if(aIdx!==null)return;
+  const m=_id("am-m").value;if(!m)return;
+  const dim=daysInMonth(m);
+  setV("am-wd",dim);setV("am-pr",dim);
+  calcLOP();
+}
+function valAtt(){calcLOP();const pr=+V2("am-pr"),wo=+V2("am-wo"),lv=+V2("am-lv"),hd=+V2("am-hd"),wd=+V2("am-wd"),t=pr+wo+lv+hd;const el=_id("av-msg");if(t>wd){el.className="vm er";el.textContent=`⚠ Total (${t}) > Working Days (${wd})`}else{el.className="vm ok";el.textContent=`✓ Valid – LOP: ${Math.max(0,wd-pr-wo-lv-hd)} days`}}
+function saveAtt(){
+  const m=String(V2("am-m")),ec=_id("am-emp").value;
+  const wd=+V2("am-wd"),pr=+V2("am-pr"),wo=+V2("am-wo"),lv=+V2("am-lv"),hd=+V2("am-hd");
+  const ot=+V2("am-ot"),otr=+V2("am-otr"),adv=+V2("am-adv"),loan=+V2("am-loan"),tax=+V2("am-tax");
+  const lop=Math.max(0,wd-pr-wo-lv-hd);
+  if(!m||!ec){toast("Month & Employee required","te");return}
+  if((pr+wo+lv+hd)>wd){toast("Total days exceed working days!","te");return}
+  if(aIdx===null&&atts.find(a=>a.m===m&&a.ec===ec)){toast("Attendance already exists for this month!","te");return}
+  const rec={m,ec,wd,pr,wo,lv,hd,lop,ot,otr,adv,loan,tax};
+  if(aIdx!==null)atts[aIdx]=rec;else atts.push(rec);
+  persist();closeMo("att-mo");rendAtt();toast("Attendance saved!");
+}
+function delAtt(i){if(!confirm("Delete attendance?"))return;atts.splice(i,1);persist();rendAtt();toast("Deleted.","ti")}
+function expAttXL(){
+  const m=_id("att-mf")?.value||"";
+  expXL([["Code","Name","Month","Working","Present","Weekly Off","Leave","Holiday","LOP","OT","Advance","Loan","Tax"],
+    ...atts.filter(a=>!m||a.m===m).map(a=>{const e=gE(a.ec);return[a.ec,e?.name,a.m,a.wd,a.pr,a.wo,a.lv,a.hd,a.lop||0,a.ot,a.adv,a.loan||0,a.tax]})],"Attendance");
+}
+
+// ── SALARY STRUCTURE ──
+function rendSS(){
+  const s=(V("ss-s")||"").toLowerCase();
+  const f=sals.filter(ss=>{const e=gE(ss.ec);return!s||ss.ec.toLowerCase().includes(s)||(e&&e.name.toLowerCase().includes(s))});
+  _id("ss-tb").innerHTML=f.length?f.map(ss=>{
+    const e=gE(ss.ec);const g=gGross(ss);const i=sals.indexOf(ss);
+    const autoOTR=otRateCalc(ss);const manOTR=ss.otr&&+ss.otr>0?+ss.otr:null;
+    return`<tr><td>${ss.ec}</td><td>${e?.name||"—"}</td><td class="tr">${fmt(ss.ba)}</td><td class="tr">${fmt(ss.hr)}</td><td class="tr">${fmt(ss.md)}</td><td class="tr">${fmt(ss.ot)}</td><td class="tr">${manOTR?`<strong>₹${manOTR.toFixed(2)}</strong>`:'<span style="color:var(--tm)">0 (auto)</span>'}</td><td class="tr" style="color:var(--tm)">₹${autoOTR.toFixed(2)}</td><td class="tr"><strong>${fmt(g)}</strong></td>
+    <td><button class="bic" onclick="openSSMo(${i})">✏️</button><button class="bic" onclick="delSS(${i})">🗑️</button></td></tr>`;
+  }).join(""):`<tr><td colspan="8" style="padding:36px;text-align:center;color:var(--tm)">No salary structures.</td></tr>`;
+}
+function openSSMo(idx=null){
+  sIdx=idx;popEmpSel("sm-emp",idx!==null?sals[idx].ec:emps[0]?.code);
+  _id("ss-mot").textContent=idx!==null?"Edit Structure":"Add Structure";
+  if(idx!==null){const ss=sals[idx];setV("sm-ba",ss.ba);setV("sm-hr",ss.hr);setV("sm-md",ss.md);setV("sm-ot",ss.ot);setV("sm-otr",ss.otr||0);cg()}
+  else{["sm-ba","sm-hr","sm-md","sm-ot","sm-otr"].forEach(id=>setV(id,0));setV("sm-gr",0);setV("sm-otr-auto",0)}
+  _id("ss-mo").classList.add("open");
+}
+function autoFillSS(){const ec=_id("sm-emp").value;const ss=gSS(ec);if(ss){setV("sm-ba",ss.ba);setV("sm-hr",ss.hr);setV("sm-md",ss.md);setV("sm-ot",ss.ot);setV("sm-otr",ss.otr||0);cg()}}
+function cg(){
+  const ba=+V2("sm-ba"),hr=+V2("sm-hr"),md=+V2("sm-md"),ot2=+V2("sm-ot");
+  const gr=ba+hr+md+ot2;
+  setV("sm-gr",gr);
+  const autoR=gr>0?Math.round(((gr/30)/8)*2):0;setV("sm-otr-auto",autoR);
+}
+function saveSS(){
+  const ec=_id("sm-emp").value;const ba=+V2("sm-ba");
+  if(!ec||!ba){toast("Employee & Basic required","te");return}
+  const ss={ec,ba,hr:+V2("sm-hr"),md:+V2("sm-md"),ot:+V2("sm-ot"),otr:+V2("sm-otr")};
+  if(sIdx!==null)sals[sIdx]=ss;else{const d=sals.findIndex(s=>s.ec===ec);if(d>=0)sals[d]=ss;else sals.push(ss)}
+  persist();closeMo("ss-mo");rendSS();toast("Salary structure saved!");
+}
+function delSS(i){if(!confirm("Delete?"))return;sals.splice(i,1);persist();rendSS();toast("Deleted.","ti")}
+function expSSXL(){
+  expXL([["Code","Name","Basic","HRA","Medical","Other","Gross"],
+    ...sals.map(ss=>{const e=gE(ss.ec);return[ss.ec,e?.name,ss.ba,ss.hr,ss.md,ss.ot,gGross(ss)]})],"Salary_Structure");
+}
+
+// ── SALARY PROCESSING (Exact Excel Format from Image) ──
+function procSal(){
+  const m=_id("proc-m")?.value||gCM();
+  if(!m){toast("Select month","te");return}
+  const af=atts.filter(a=>a.m===m);if(!af.length){toast("No attendance for this month","te");return}
+  const np=af.map(a=>procOne(a.ec,m)).filter(Boolean);
+  procs=procs.filter(p=>p.m!==m);procs.push(...np);
+  persist();rendProc();toast(`Processed ${np.length} employees for ${fmtM(m)}`);
+}
+function rendProc(){
+  const m=_id("proc-m")?.value||gCM();const rows=enforceExempt(procs.filter(p=>p.m===m));
+  let t={gross:0,otSal:0,tot:0,epf:0,esi:0,tax:0,adv:0,net:0};
+  _id("proc-tb").innerHTML=rows.length?rows.map(p=>{
+    const e=gE(p.ec);const ss=gSS(p.ec);
+    const basic=ss?.ba||0,hra=ss?.hr||0,other=(ss?.md||0)+(ss?.ot||0);
+    const totPlusOT=r2(p.earned+p.otSal);
+    t.gross+=p.gross;t.otSal+=p.otSal;t.tot+=totPlusOT;t.epf+=p.empPF;t.esi+=p.empESI;t.tax+=p.tax;t.adv+=p.adv;t.net+=p.net;
+    return`<tr>
+      <td>${p.ec}</td><td>${e?.name||"—"}</td><td>${e?.bacc||"—"}</td><td>${e?.ifsc||"—"}</td><td>${e?.des||"—"}</td>
+      <td>${e?.uan||"—"}</td><td>${e?.esic||"—"}</td><td class="tc">${p.wd}</td>
+      <td class="tr">${fmt(p.gross)}</td><td class="tr">${fmt(r2(basic*(p.pr/p.wd)))}</td>
+      <td class="tr">${fmt(r2(hra*(p.pr/p.wd)))}</td><td class="tr">${fmt(r2(other*(p.pr/p.wd)))}</td>
+      <td class="tr">${fmt(p.earned)}</td><td class="tc">${p.pr}</td><td class="tc">${p.ot}</td>
+      <td class="tr">₹${p.otRate?.toFixed(2)||0}</td><td class="tr">${fmt(p.otSal)}</td>
+      <td class="tr"><strong>${fmt(totPlusOT)}</strong></td>
+      <td class="tr">${fmt(p.empPF)}</td><td class="tr">${fmt(p.empESI)}</td>
+      <td class="tr">${fmt(p.tax)}</td><td class="tr">${fmt(p.adv)}</td>
+      <td class="tr"><strong style="color:var(--gn)">${fmt(p.net)}</strong></td>
+    </tr>`;
+  }).join(""):`<tr><td colspan="23" style="padding:36px;text-align:center;color:var(--tm)"><span style="font-size:2rem;display:block;margin-bottom:8px">⚙️</span>Click "Process Month" to begin.</td></tr>`;
+  _id("proc-tf").innerHTML=rows.length?`<tr><td colspan="8">TOTAL (${rows.length} employees)</td><td>${fmt(t.gross)}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>${fmt(t.otSal)}</td><td>${fmt(t.tot)}</td><td>${fmt(t.epf)}</td><td>${fmt(t.esi)}</td><td>${fmt(t.tax)}</td><td>${fmt(t.adv)}</td><td>${fmt(t.net)}</td></tr>`:"";
+}
+function expProcXL(){
+  const m=_id("proc-m")?.value||gCM();const rows=enforceExempt(procs.filter(p=>p.m===m));
+  expXL([
+    ["SR. No","Employee's Name","Account No.","IFSC Code","Employee Code","Designation","UAN No","ESI No","Total Working Day","Total Salary","Basic Salary","HRA","Other Allowance","Gross Salary","Present Days","Over Time (Hours)","Overtime Rate","Over Time (Salaryrs)","Total Salary + OT Salary","EPF Contribution (12%)","ESI Contribution (0.75%)","Income Tax","Advance Taken","Net Pay Salary"],
+    ...rows.map((p,i)=>{const e=gE(p.ec);const ss=gSS(p.ec);const basic=ss?.ba||0,hra=ss?.hr||0,other=(ss?.md||0)+(ss?.ot||0);const totPlusOT=r2(p.earned+p.otSal);
+    return[i+1,e?.name||"",e?.bacc||"",e?.ifsc||"",p.ec,e?.des||"",e?.uan||"",e?.esic||"",p.wd,p.gross,r2(basic*(p.pr/p.wd)),r2(hra*(p.pr/p.wd)),r2(other*(p.pr/p.wd)),p.earned,p.pr,p.ot,p.otRate||0,p.otSal,totPlusOT,p.empPF,p.empESI,p.tax,p.adv,p.net]})
+  ],"Salary_Processing_"+m);
+}
+
+// ── PAY SLIP ──
+function rendSlip(){
+  const ec=_id("ps-emp")?.value;const m=_id("ps-m")?.value||gCM();
+  if(!ec){_id("payslip-wrap").innerHTML=`<div style="padding:36px;text-align:center;color:var(--tm)">Select employee and month</div>`;return}
+  const e=gE(ec);const ss=gSS(ec);const att=gAtt(ec,m);
+  if(!e||!ss){_id("payslip-wrap").innerHTML=`<div style="padding:36px;text-align:center;color:var(--tm)">No salary structure for this employee. <button class="btn bp" onclick="nav('salstruct')">Add Structure</button></div>`;return}
+  const gross=gGross(ss);
+  const pr=att?.pr||0,wd=att?.wd||26,lop=att?.lop||Math.max(0,wd-pr);
+  const otH=att?.ot||0;
+  const effSlipRate=(att?.otr&&+att.otr>0)?+att.otr:(ss.otr&&+ss.otr>0?+ss.otr:otRateCalc(ss));const otRate=effSlipRate;
+  const otSal=gOT(ss,otH,effSlipRate);
+  const earned=r2(gross*(pr/WD));
+  const basicE=r2(ss.ba*(pr/WD)),hraE=r2(ss.hr*(pr/WD)),mdE=r2(ss.md*(pr/WD)),otAE=r2(ss.ot*(pr/WD));
+  const isExempt=!!e.pfEsiExempt;
+  const pf=isExempt?{pw:0,epf:0,erpf:0,eps:0,eepf:0,tot:0}:gPF(gross,basicE);
+  const totEarn=r2(earned+otSal);
+  const esi=(!isExempt&&gross<=ESC)?gESI(totEarn):null;
+  const adv=att?.adv||0,loan=att?.loan||0,tax=att?.tax||0;
+  const totDed=r2(pf.epf+(esi?esi.ee:0)+loan+adv);
+  const net=r2(totEarn-totDed-tax);
+  _id("payslip-wrap").innerHTML=`<div class="payslip" id="slip-inner">
+    <div class="ps-letterhead">
+      ${co.logo?`<div class="ps-logo-wrap"><img class="ps-logo" src="${co.logo}"/></div>`:""}
+      <div class="ps-co-block">
+        <div class="ps-co-name">${co.name}</div>
+        <div class="ps-co-addr">${co.addr1||""}${co.addr1&&co.addr2?"<br/>":""}${co.addr2||""}</div>
+        ${(co.phone||co.est)?`<div class="ps-co-contact">${co.phone?"Ph: "+co.phone:""}${co.phone&&co.est?" | ":""}${co.est?"Estt. Code: "+co.est:""}</div>`:""}
+      </div>
+    </div>
+    <div class="ps-title">Pay Slip for ${fmtM(m)}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:10px;font-size:.78rem;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden">
+      ${[["Name of the Employee",e.name,"UAN",e.uan||"—"],["ES Insurance No",e.esic||"—","PAN No.",e.pan||"NA"],["Designation",e.des||"—","",""],["DOJ",e.doj||"—","Bank Name",e.bname||co.bank||"—"],["Gross Wage",fmt(gross),"Bank A/C No",e.bacc||"—"],["Total Working Days",wd,"Paid Days",pr],["LOP days",lop,"Leaves Taken",att?.lv||0],["Over Time (Hours)",otH,"Overtime Rate",otRate]].map(([l1,v1,l2,v2])=>`<div style="display:grid;grid-template-columns:160px 1fr;padding:5px 10px;border-bottom:1px solid #f3f4f6"><span style="color:#374151;font-weight:600">${l1}</span><span style="font-weight:700">${v1}</span></div><div style="display:grid;grid-template-columns:120px 1fr;padding:5px 10px;border-bottom:1px solid #f3f4f6;border-left:1px solid #f3f4f6"><span style="color:#374151;font-weight:600">${l2}</span><span style="font-weight:700">${v2}</span></div>`).join("")}
+    </div>
+    <table class="ps-tbl"><thead><tr><th style="width:50%" class="ps-th">Earnings</th><th style="width:25%;text-align:right" class="ps-th">Amount</th><th style="width:25%" class="ps-th">Deductions</th><th style="text-align:right" class="ps-th">Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Basic Wage</td><td style="text-align:right">${fmt(basicE)}</td><td>EPF</td><td style="text-align:right">${fmt(pf.epf)}</td></tr>
+      <tr><td>HRA</td><td style="text-align:right">${fmt(hraE)}</td><td>ESI/Health Insurance</td><td style="text-align:right">${fmt(esi?esi.ee:0)}</td></tr>
+      <tr><td>Medical Allowances</td><td style="text-align:right">${fmt(mdE)}</td><td>Loan Recovery</td><td style="text-align:right">${fmt(loan)}</td></tr>
+      <tr><td>Other Allowances</td><td style="text-align:right">${fmt(otAE)}</td><td>Advance Salary</td><td style="text-align:right">${fmt(adv)}</td></tr>
+      <tr><td>Over Time (Salary)</td><td style="text-align:right">${fmt(otSal)}</td><td>${tax>0?"Income Tax":""}</td><td style="text-align:right">${tax>0?fmt(tax):""}</td></tr>
+      <tr class="tot-row"><td><strong>Total Earnings</strong></td><td style="text-align:right"><strong>${fmt(totEarn)}</strong></td><td><strong>Total Deductions</strong></td><td style="text-align:right"><strong>${fmt(totDed+tax)}</strong></td></tr>
+    </tbody></table>
+    <div class="ps-net"><div class="ps-net-lbl">Net Salary</div><div class="ps-net-val">${fmt(net)}</div></div>
+    <div class="ps-sigs"><div>___________________________<br/>Employer Signature</div><div>___________________________<br/>Employee Signature</div></div>
+  </div>`;
+}
+function printSlip(){window.print()}
+function expSlipPDF(){
+  const inner=_id("slip-inner");
+  if(!inner){toast("Generate slip first","te");return}
+  if(typeof html2canvas==="undefined"){toast("html2canvas not loaded. Check internet connection.","te");return}
+  const e=gE(_id("ps-emp")?.value);
+  const m=_id("ps-m")?.value||gCM();
+  toast("Generating PDF...","ti");
+  // Save original styles
+  const orig=inner.style.cssText;
+  inner.style.width="794px";
+  inner.style.background="#ffffff";
+  inner.style.color="#000000";
+  html2canvas(inner,{
+    scale:2,
+    useCORS:true,
+    backgroundColor:"#ffffff",
+    logging:false,
+    onclone:(clonedDoc)=>{
+      // Force all text black in cloned document for PDF
+      clonedDoc.querySelectorAll("*").forEach(el=>{
+        el.style.color=el.style.color||"#000000";
+      });
+    }
+  }).then(canvas=>{
+    inner.style.cssText=orig;
+    const{jsPDF}=window.jspdf;
+    const imgData=canvas.toDataURL("image/jpeg",0.98);
+    const pdf=new jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+    const pdfW=pdf.internal.pageSize.getWidth();
+    const pdfH=pdf.internal.pageSize.getHeight();
+    const ratio=canvas.width/canvas.height;
+    const imgW=pdfW-20;
+    const imgH=imgW/ratio;
+    const x=10;
+    const y=10;
+    if(imgH<=pdfH-20){
+      pdf.addImage(imgData,"JPEG",x,y,imgW,imgH);
+    } else {
+      // Multi-page: slice canvas
+      const pageH=Math.floor(canvas.width*(pdfH-20)/(pdfW-20));
+      let yOffset=0;const totalH=canvas.height;
+      while(yOffset<totalH){
+        const sliceH=Math.min(pageH,totalH-yOffset);
+        const sliceCanvas=document.createElement("canvas");
+        sliceCanvas.width=canvas.width;sliceCanvas.height=sliceH;
+        sliceCanvas.getContext("2d").drawImage(canvas,0,yOffset,canvas.width,sliceH,0,0,canvas.width,sliceH);
+        const sliceData=sliceCanvas.toDataURL("image/jpeg",0.98);
+        if(yOffset>0)pdf.addPage();
+        pdf.addImage(sliceData,"JPEG",x,y,imgW,(sliceH/canvas.width)*(pdfW-20));
+        yOffset+=sliceH;
+      }
+    }
+    pdf.save(`PaySlip_${e?.code||""}_${m}.pdf`);
+    toast("Pay Slip PDF downloaded! ₹ symbol is correct.");
+  }).catch(err=>{
+    inner.style.cssText=orig;
+    console.error(err);
+    toast("PDF error: "+err.message,"te");
+  });
+}
+
+// ── LETTERHEAD ──
+function rendLH(){
+  _id("letterhead-wrap").innerHTML=`<div class="lh-doc" id="lh-inner">
+    <div class="lh-header">
+      <div class="lh-co-block">
+        <div class="lh-co-name">${co.name||""}</div>
+        <div class="lh-co-addr">${co.addr1||""}${co.addr1&&co.addr2?"<br/>":""}${co.addr2||""}</div>
+        ${(co.phone||co.est||co.pf||co.esic)?`<div class="lh-co-contact">${co.phone?"Ph: "+co.phone:""}${co.phone&&(co.est||co.pf||co.esic)?" | ":""}${co.est?"Estt. Code: "+co.est:""}${co.est&&(co.pf||co.esic)?" | ":""}${co.pf?"PF Code: "+co.pf:""}${co.pf&&co.esic?" | ":""}${co.esic?"ESIC Code: "+co.esic:""}</div>`:""}
+      </div>
+      ${co.logo?`<div class="lh-logo-wrap"><img class="lh-logo" src="${co.logo}"/></div>`:""}
+    </div>
+    <div class="lh-body"><textarea spellcheck="false"></textarea></div>
+    <div class="lh-footer">
+      <div class="lh-footer-col">
+        ${co.mobile?`<div class="lh-footer-item"><span class="lh-footer-ic">📱</span><span>${co.mobile}</span></div>`:""}
+        ${co.email?`<div class="lh-footer-item"><span class="lh-footer-ic">✉️</span><span>${co.email}</span></div>`:""}
+      </div>
+      <div class="lh-footer-col">
+        ${co.gst?`<div class="lh-footer-item"><span class="lh-footer-ic">🧾</span><span>GST No: ${co.gst}</span></div>`:""}
+        ${co.udyam?`<div class="lh-footer-item"><span class="lh-footer-ic">🏭</span><span>Udyam Reg. No: ${co.udyam}</span></div>`:""}
+      </div>
+    </div>
+  </div>`;
+}
+function printLH(){window.print()}
+function expLHPDF(){
+  const inner=_id("lh-inner");
+  if(!inner){toast("Letterhead not ready","te");return}
+  if(typeof html2canvas==="undefined"){toast("html2canvas not loaded. Check internet connection.","te");return}
+  toast("Generating PDF...","ti");
+  const orig=inner.style.cssText;
+  inner.style.width="794px";
+  inner.style.background="#ffffff";
+  inner.style.color="#000000";
+  html2canvas(inner,{
+    scale:2,useCORS:true,backgroundColor:"#ffffff",logging:false,
+    onclone:(clonedDoc)=>{
+      clonedDoc.querySelectorAll("*").forEach(el=>{el.style.color=el.style.color||"#000000"});
+      const ta=clonedDoc.querySelector(".lh-body textarea");
+      if(ta){
+        const div=clonedDoc.createElement("div");
+        div.style.cssText="width:100%;min-height:520px;font-family:inherit;font-size:.88rem;color:#000;line-height:1.9;white-space:pre-wrap;padding-top:26px";
+        div.textContent=ta.value;
+        ta.parentNode.replaceChild(div,ta);
+      }
+    }
+  }).then(canvas=>{
+    inner.style.cssText=orig;
+    const{jsPDF}=window.jspdf;
+    const imgData=canvas.toDataURL("image/jpeg",0.98);
+    const pdf=new jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+    const pdfW=pdf.internal.pageSize.getWidth();
+    const pdfH=pdf.internal.pageSize.getHeight();
+    const ratio=canvas.width/canvas.height;
+    const imgW=pdfW-20;
+    const imgH=imgW/ratio;
+    if(imgH<=pdfH-20){
+      pdf.addImage(imgData,"JPEG",10,10,imgW,imgH);
+    } else {
+      const pageH=Math.floor(canvas.width*(pdfH-20)/(pdfW-20));
+      let yOffset=0;const totalH=canvas.height;
+      while(yOffset<totalH){
+        const sliceH=Math.min(pageH,totalH-yOffset);
+        const sliceCanvas=document.createElement("canvas");
+        sliceCanvas.width=canvas.width;sliceCanvas.height=sliceH;
+        sliceCanvas.getContext("2d").drawImage(canvas,0,yOffset,canvas.width,sliceH,0,0,canvas.width,sliceH);
+        const sliceData=sliceCanvas.toDataURL("image/jpeg",0.98);
+        if(yOffset>0)pdf.addPage();
+        pdf.addImage(sliceData,"JPEG",10,10,imgW,(sliceH/canvas.width)*(pdfW-20));
+        yOffset+=sliceH;
+      }
+    }
+    pdf.save("Letterhead.pdf");
+    toast("Letterhead PDF downloaded!");
+  }).catch(err=>{
+    inner.style.cssText=orig;
+    console.error(err);
+    toast("PDF error: "+err.message,"te");
+  });
+}
+
+// ── SALARY REGISTER ──
+function rendSR(){
+  const m=_id("sr-m")?.value||gCM();const rows=getRows(m);let t={g:0,ot:0,tot:0,pf:0,esi:0,adv:0,tax:0,net:0};
+  _id("sr-tb").innerHTML=rows.length?rows.map((p,i)=>{const e=gE(p.ec);const totOT=r2(p.earned+p.otSal);t.g+=p.gross;t.ot+=p.otSal;t.tot+=totOT;t.pf+=p.empPF;t.esi+=p.empESI;t.adv+=p.adv;t.tax+=p.tax;t.net+=p.net;
+    return`<tr><td>${i+1}</td><td>${p.ec}</td><td>${e?.name||"—"}</td><td>${e?.des||"—"}</td><td class="tr">${fmt(p.gross)}</td><td class="tr">${fmt(p.otSal)}</td><td class="tr">${fmt(totOT)}</td><td class="tr">${fmt(p.empPF)}</td><td class="tr">${fmt(p.empESI)}</td><td class="tr">${fmt(p.adv)}</td><td class="tr">${fmt(p.tax)}</td><td class="tr"><strong>${fmt(p.net)}</strong></td></tr>`;
+  }).join(""):`<tr><td colspan="12" style="padding:36px;text-align:center;color:var(--tm)">Process salaries first.</td></tr>`;
+  _id("sr-tf").innerHTML=rows.length?`<tr><td colspan="4">TOTAL</td><td>${fmt(t.g)}</td><td>${fmt(t.ot)}</td><td>${fmt(t.tot)}</td><td>${fmt(t.pf)}</td><td>${fmt(t.esi)}</td><td>${fmt(t.adv)}</td><td>${fmt(t.tax)}</td><td>${fmt(t.net)}</td></tr>`:"";
+}
+function expSRXL(){const m=_id("sr-m")?.value||gCM();const rows=getRows(m);expXL([["#","Code","Name","Designation","Gross","OT Salary","Total+OT","EPF","ESI","Advance","Tax","Net Pay"],...rows.map((p,i)=>{const e=gE(p.ec);return[i+1,p.ec,e?.name,e?.des,p.gross,p.otSal,r2(p.earned+p.otSal),p.empPF,p.empESI,p.adv,p.tax,p.net]})],"Salary_Register_"+m)}
+function expSRPDF(){const m=_id("sr-m")?.value||gCM();const rows=getRows(m);expPDF("Salary Register – "+fmtM(m),["#","Code","Name","Gross","OT","Total+OT","EPF","ESI","Adv","Net"],rows.map((p,i)=>{const e=gE(p.ec);return[i+1,p.ec,e?.name||"",Math.round(p.gross),Math.round(p.otSal),Math.round(r2(p.earned+p.otSal)),Math.round(p.empPF),Math.round(p.empESI),Math.round(p.adv),Math.round(p.net)]}),"Salary_Register_"+m)}
+
+// ── PF REGISTER ──
+function rendPFR(){
+  const m=_id("pfr-m")?.value||gCM();const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&!e.pfEsiExempt});let t={pw:0,ep:0,er:0,eps:0,ee:0,tot:0};
+  _id("pfr-tb").innerHTML=rows.length?rows.map((p,i)=>{const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);t.pw+=pf.pw;t.ep+=pf.epf;t.er+=pf.erpf;t.eps+=pf.eps;t.ee+=pf.eepf;t.tot+=pf.tot;
+    return`<tr><td>${i+1}</td><td>${p.ec}</td><td>${e?.name||"—"}</td><td>${e?.uan||'<span class="bno">Missing</span>'}</td><td class="tr">${fmt(pf.pw)}</td><td class="tr">${fmt(pf.epf)}</td><td class="tr">${fmt(pf.erpf)}</td><td class="tr">${fmt(pf.eps)}</td><td class="tr">${fmt(pf.eepf)}</td><td class="tr"><strong>${fmt(pf.tot)}</strong></td></tr>`;
+  }).join(""):`<tr><td colspan="10" style="padding:36px;text-align:center;color:var(--tm)">Process salaries first.</td></tr>`;
+  _id("pfr-tf").innerHTML=rows.length?`<tr><td colspan="4">TOTAL</td><td>${fmt(t.pw)}</td><td>${fmt(t.ep)}</td><td>${fmt(t.er)}</td><td>${fmt(t.eps)}</td><td>${fmt(t.ee)}</td><td>${fmt(t.tot)}</td></tr>`:"";
+}
+function expPFRXL(){const m=_id("pfr-m")?.value||gCM();const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&!e.pfEsiExempt});expXL([["#","Code","Name","UAN","PF Wages","Emp PF","Er PF","EPS","Er EPF","Total"],...rows.map((p,i)=>{const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);return[i+1,p.ec,e?.name,e?.uan,pf.pw,pf.epf,pf.erpf,pf.eps,pf.eepf,pf.tot]})],"PF_Register_"+m)}
+function expPFRPDF(){const m=_id("pfr-m")?.value||gCM();const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&!e.pfEsiExempt});expPDF("PF Register – "+fmtM(m),["#","Code","Name","UAN","PF Wages","Emp PF","Er PF","EPS","Er EPF","Total"],rows.map((p,i)=>{const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);return[i+1,p.ec,e?.name||"",e?.uan||"",pf.pw,pf.epf,pf.erpf,pf.eps,pf.eepf,pf.tot]}),"PF_Register_"+m)}
+
+// ── ESI REGISTER ──
+function rendESIR(){
+  const m=_id("esir-m")?.value||gCM();const rows=getRows(m).filter(p=>{const e=gE(p.ec);return p.esiElig&&e&&!e.pfEsiExempt});let t={g:0,ee:0,er:0,tot:0};
+  _id("esir-tb").innerHTML=rows.length?rows.map((p,i)=>{const e=gE(p.ec);const esi=esiFromP(p)||{ee:0,er:0,tot:0};const att=gAtt(p.ec,m);t.g+=p.totalForESI;t.ee+=esi.ee;t.er+=esi.er;t.tot+=esi.tot;
+    return`<tr><td>${i+1}</td><td>${e?.esic||'<span class="bno">Missing</span>'}</td><td>${e?.name||"—"}</td><td class="tr">${fmt(p.totalForESI)}</td><td class="tc">${att?.pr||"—"}</td><td class="tr">${fmt(esi.ee)}</td><td class="tr">${fmt(esi.er)}</td><td class="tr"><strong>${fmt(esi.tot)}</strong></td></tr>`;
+  }).join(""):`<tr><td colspan="8" style="padding:36px;text-align:center;color:var(--tm)">No ESI eligible employees.</td></tr>`;
+  _id("esir-tf").innerHTML=rows.length?`<tr><td colspan="3">TOTAL</td><td>${fmt(t.g)}</td><td></td><td>${fmt(t.ee)}</td><td>${fmt(t.er)}</td><td>${fmt(t.tot)}</td></tr>`:"";
+}
+function expESIRXL(){const m=_id("esir-m")?.value||gCM();const rows=getRows(m).filter(p=>{const e=gE(p.ec);return p.esiElig&&e&&!e.pfEsiExempt});expXL([["#","ESIC No","Name","Total Salary+OT","Days Worked","Emp ESI","Er ESI","Total ESI"],...rows.map((p,i)=>{const e=gE(p.ec);const att=gAtt(p.ec,m);const esi=esiFromP(p)||{ee:0,er:0,tot:0};return[i+1,e?.esic||"",e?.name,p.totalForESI,att?.pr||0,esi.ee,esi.er,esi.tot]})],"ESI_Register_"+m)}
+function expESIRPDF(){const m=_id("esir-m")?.value||gCM();const rows=getRows(m).filter(p=>{const e=gE(p.ec);return p.esiElig&&e&&!e.pfEsiExempt});expPDF("ESI Register – "+fmtM(m),["#","ESIC No","Name","Total Salary+OT","Days","Emp ESI","Er ESI","Total"],rows.map((p,i)=>{const e=gE(p.ec);const att=gAtt(p.ec,m);const esi=esiFromP(p)||{ee:0,er:0,tot:0};return[i+1,e?.esic||"",e?.name||"",p.totalForESI,att?.pr||0,esi.ee,esi.er,esi.tot]}),"ESI_Register_"+m)}
+
+// ── EPFO ECR (Government Format) ──
+function rendECR(){
+  const m=_id("ecr-m")?.value||gCM();
+  const[y,mo]=m.split("-");
+  const wageM=new Date(y,mo-1,1).toLocaleString("en-IN",{month:"long",year:"numeric"}).toUpperCase();
+  _id("ecr-wage-month").textContent="Wage Month: "+wageM;
+  // ECR Header block
+  _id("ecr-hdr-text").innerHTML=`<strong>EPFO ECR Header Information</strong><br/>
+  Establishment Name: <strong>${co.name}</strong><br/>
+  Establishment Code: <strong>${co.est||"[Set in Company Settings]"}</strong><br/>
+  PF Registration No: <strong>${co.pf||"[Set in Company Settings]"}</strong><br/>
+  Wage Month: <strong>${wageM}</strong><br/>
+  Total Members: <strong>${emps.filter(e=>e.uan).length}</strong>`;
+  const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&e.uan&&!e.pfEsiExempt});let t={g:0,pw:0,ew:0,epf:0,eps:0,erpf:0,tot:0};
+  _id("ecr-tb").innerHTML=rows.length?rows.map((p,i)=>{
+    const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);
+    const att=gAtt(p.ec,m);const ncp=att?Math.max(0,att.wd-att.pr-(att.wo||0)-(att.lv||0)-(att.hd||0)):0;
+    t.g+=p.gross;t.pw+=pf.pw;t.ew+=pf.epsWage;t.epf+=pf.epf;t.eps+=pf.eps;t.erpf+=pf.erpf;t.tot+=pf.tot;
+    return`<tr>
+      <td>${i+1}</td>
+      <td><strong>${e.uan}</strong></td>
+      <td>${e.name}</td>
+      <td class="tr">${Math.round(p.gross)}</td>
+      <td class="tr">${Math.round(pf.pw)}</td>
+      <td class="tr">${Math.round(pf.epsWage)}</td>
+      <td class="tr">${Math.round(pf.epsWage)}</td>
+      <td class="tr">${Math.round(pf.epf)}</td>
+      <td class="tr">${Math.round(pf.eps)}</td>
+      <td class="tr">${Math.round(pf.erpf)}</td>
+      <td class="tc">${ncp}</td>
+      <td class="tc">0</td>
+    </tr>`;
+  }).join(""):`<tr><td colspan="12" style="padding:36px;text-align:center;color:var(--tm)"><span style="font-size:2rem;display:block;margin-bottom:8px">📤</span>Process salaries first or employees missing UAN.</td></tr>`;
+  _id("ecr-tf").innerHTML=rows.length?`<tr><td colspan="3">TOTAL (${rows.length} members)</td><td>${Math.round(t.g)}</td><td>${Math.round(t.pw)}</td><td>${Math.round(t.ew)}</td><td>${Math.round(t.ew)}</td><td>${Math.round(t.epf)}</td><td>${Math.round(t.eps)}</td><td>${Math.round(t.erpf)}</td><td></td><td></td></tr>`:"";
+}
+function expECRTXT(){
+  // EPFO ECR Text File Format — EXACT government specification.
+  // One line per member, fields separated by "#~#", NO header line,
+  // NO serial number column, and NO totals/footer line.
+  // Fields: UAN#~#Name#~#GrossWages#~#EPFWages#~#EPSWages#~#EDLIWages#~#EPFContriEE#~#EPSContri#~#EPFContriER(diff)#~#NCPdays#~#RefundOfAdvances
+  const m=_id("ecr-m")?.value||gCM();
+  const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&e.uan&&!e.pfEsiExempt});
+  if(!rows.length){toast("No employees with UAN. Process salaries first.","te");return}
+
+  const lines=rows.map(p=>{
+    const e=gE(p.ec);const pf=pfFromP(p);
+    const att=gAtt(p.ec,m);const ncp=att?Math.max(0,att.wd-att.pr-(att.wo||0)-(att.lv||0)-(att.hd||0)):0;
+    const epfWage=Math.round(pf.pw);
+    const epsWage=Math.round(pf.epsWage); // capped at Rs.15,000
+    const edliWage=Math.round(pf.epsWage); // capped at Rs.15,000
+    const epfEE=Math.round(pf.epf);    // Employee PF contribution 12%
+    const epsContr=Math.round(pf.eps); // EPS contribution 8.33%
+    const epfER=Math.round(pf.eepf);   // Employer PF contribution (diff) 3.67%
+    const grossW=Math.round(p.gross);
+    const refund=0;
+    return[e.uan,e.name,grossW,epfWage,epsWage,edliWage,epfEE,epsContr,epfER,ncp,refund].join("#~#");
+  });
+
+  const txt=lines.join("\r\n");
+  const blob=new Blob([txt],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download=`ECR_${co.est||"ESTCODE"}_${m}.txt`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast("ECR .txt file downloaded! Upload at EPFO Unified Portal.");
+}
+function expECRXL(){
+  const m=_id("ecr-m")?.value||gCM();const[y,mo]=m.split("-");const wageM=new Date(y,mo-1,1).toLocaleString("en-IN",{month:"long",year:"numeric"}).toUpperCase();
+  const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&e.uan&&!e.pfEsiExempt});
+  // ECR format as per EPFO (text format)
+  const header=["#","UAN","Member Name","Gross Wages","EPF Wages","EPS Wages","EDLI Wages","EPF Contribution EE","EPS Contribution","EPF Contribution ER","NCP Days","Refund of Advances"];
+  const data=rows.map((p,i)=>{
+    const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);
+    const att=gAtt(p.ec,m);const ncp=att?Math.max(0,att.wd-att.pr-(att.wo||0)-(att.lv||0)-(att.hd||0)):0;
+    return[i+1,e.uan,e.name,Math.round(p.gross),Math.round(pf.pw),Math.round(pf.epsWage),Math.round(pf.epsWage),Math.round(pf.epf),Math.round(pf.eps),Math.round(pf.erpf),ncp,0];
+  });
+  if(typeof XLSX!=="undefined"){
+    const wb=XLSX.utils.book_new();
+    // ECR Text Sheet
+    const ecrLines=["#~UAN~Member Name~Gross Wages~EPF Wages~EPS Wages~EDLI Wages~EPF Contribution EE~EPS Contribution~EPF Contribution ER~NCP Days~Refund of Advances"];
+    rows.forEach((p,i)=>{const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);const att=gAtt(p.ec,m);const ncp=att?Math.max(0,att.wd-att.pr-(att.wo||0)-(att.lv||0)-(att.hd||0)):0;ecrLines.push(`${i+1}~${e.uan}~${e.name}~${Math.round(p.gross)}~${Math.round(pf.pw)}~${Math.round(pf.epsWage)}~${Math.round(pf.epsWage)}~${Math.round(pf.epf)}~${Math.round(pf.eps)}~${Math.round(pf.erpf)}~${ncp}~0`)});
+    const ws1=XLSX.utils.aoa_to_sheet([[`ESTABLISHMENT CODE: ${co.est||""}`],[`ESTABLISHMENT NAME: ${co.name}`],[`PF REGISTRATION: ${co.pf||""}`],[`WAGE MONTH: ${wageM}`],[`TOTAL MEMBERS: ${rows.length}`],[],...[header,...data]]);
+    XLSX.utils.book_append_sheet(wb,ws1,"ECR_EPFO");
+    // Summary Sheet
+    let totG=0,totEPF=0,totEPS=0,totER=0;
+    data.forEach(r=>{totG+=r[3];totEPF+=r[7];totEPS+=r[8];totER+=r[9]});
+    const ws2=XLSX.utils.aoa_to_sheet([["EPFO ECR SUMMARY"],["Establishment",co.name],["PF Code",co.pf||""],["Wage Month",wageM],["Total Members",rows.length],["Total Gross Wages",totG],["Total EPF (EE)",totEPF],["Total EPS",totEPS],["Total EPF (ER)",totER],["Total Contribution",totEPF+totER]]);
+    XLSX.utils.book_append_sheet(wb,ws2,"ECR_Summary");
+    XLSX.writeFile(wb,`EPFO_ECR_${m}.xlsx`);toast("ECR Excel exported (2 sheets: ECR + Summary)!");
+  }
+}
+function expECRPDF(){
+  const m=_id("ecr-m")?.value||gCM();const[y,mo]=m.split("-");const wageM=new Date(y,mo-1,1).toLocaleString("en-IN",{month:"long",year:"numeric"}).toUpperCase();
+  const rows=getRows(m).filter(p=>{const e=gE(p.ec);return e&&e.uan&&!e.pfEsiExempt});
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+  doc.setFontSize(13);doc.setFont(undefined,"bold");doc.text("EPFO ECR – Electronic Challan cum Return",14,14);
+  doc.setFontSize(8);doc.setFont(undefined,"normal");
+  doc.text(`Establishment: ${co.name} | PF Code: ${co.pf||"—"} | Wage Month: ${wageM} | Total Members: ${rows.length}`,14,20);
+  doc.setLineWidth(.3);doc.line(14,22,283,22);
+  doc.autoTable({
+    head:[["#","UAN","Member Name","Gross Wages","EPF Wages","EPS Wages","EDLI Wages","EPF EE","EPS","EPF ER","NCP Days","Refund"]],
+    body:rows.map((p,i)=>{const e=gE(p.ec);const ss=gSS(p.ec);const pf=pfFromP(p);const att=gAtt(p.ec,m);const ncp=att?Math.max(0,att.wd-att.pr-(att.wo||0)-(att.lv||0)-(att.hd||0)):0;return[i+1,e.uan,e.name,Math.round(p.gross),Math.round(pf.pw),Math.round(pf.epsWage),Math.round(pf.epsWage),Math.round(pf.epf),Math.round(pf.eps),Math.round(pf.erpf),ncp,0]}),
+    startY:26,styles:{fontSize:7,cellPadding:2},headStyles:{fillColor:[30,41,59],textColor:255,fontStyle:"bold"},alternateRowStyles:{fillColor:[248,250,252]}
+  });
+  doc.save(`EPFO_ECR_${m}.pdf`);toast("ECR PDF downloaded!");
+}
+
+// ── BANK ADVICE / TRANSFER ──
+function rendBank(){
+  const m=_id("bank-m")?.value||gCM();const rows=getRows(m);let tn=0;
+  // Update advice header
+  const dt=new Date();
+  _id("ba-co-name").textContent=co.name||"";
+  _id("ba-co-addr").textContent=(co.addr1||"")+(co.addr2?", "+co.addr2:"");
+  _id("ba-month").textContent="Salary Month: "+fmtM(m);
+  _id("ba-date").textContent=dt.toLocaleDateString("en-IN");
+  _id("ba-bank-info").textContent=`Company Bank: ${co.bank||"—"}  |  Total Employees: ${rows.length}`;
+  _id("bank-tb").innerHTML=rows.length?rows.map((p,i)=>{
+    const e=gE(p.ec);tn+=p.net;
+    return`<tr>
+      <td>${i+1}</td>
+      <td>${p.ec}</td>
+      <td><strong>${e?.name||"—"}</strong></td>
+      <td style="color:var(--t2)">${e?.des||"—"}</td>
+      <td>${e?.bnk||co.bank||"—"}</td>
+      <td><code>${e?.bacc||"—"}</code></td>
+      <td><code>${e?.ifsc||"—"}</code></td>
+      <td class="tr"><strong>${fmt(p.net)}</strong></td>
+      <td style="color:var(--t2)">Salary ${fmtM(m)}</td>
+    </tr>`;
+  }).join(""):`<tr><td colspan="9" style="padding:36px;text-align:center;color:var(--tm)">Process salaries first.</td></tr>`;
+  _id("bank-tf").innerHTML=rows.length?`<tr><td colspan="7"><strong>TOTAL AMOUNT TO BE TRANSFERRED</strong></td><td class="tr"><strong>${fmt(tn)}</strong></td><td>(${numToWords(tn)} Rupees Only)</td></tr>`:"";
+}
+function expBankXL(){
+  const m=_id("bank-m")?.value||gCM();const rows=getRows(m);let tn=0;
+  const hdr=[["BANK ADVICE – SALARY PAYMENT"],[co.name||""],[co.addr1||"",co.addr2||""],["Salary Month: "+fmtM(m),"","Date: "+new Date().toLocaleDateString("en-IN")],[],
+    ["Sr No","Emp Code","Employee Name","Designation","Bank Name","Account No","IFSC Code","Net Salary","Remarks"]];
+  const data=rows.map((p,i)=>{const e=gE(p.ec);tn+=p.net;return[i+1,p.ec,e?.name||"",e?.des||"",e?.bnk||co.bank||"",e?.bacc||"",e?.ifsc||"",p.net,"Salary "+fmtM(m)]});
+  const footer=[["","","","","","","Total",tn,""]];
+  if(typeof XLSX!=="undefined"){
+    const wb=XLSX.utils.book_new();
+    const ws=XLSX.utils.aoa_to_sheet([...hdr,...data,...footer]);
+    ws["!cols"]=[{wch:6},{wch:10},{wch:25},{wch:18},{wch:15},{wch:18},{wch:14},{wch:14},{wch:20}];
+    XLSX.utils.book_append_sheet(wb,ws,"Bank_Advice");
+    XLSX.writeFile(wb,"Bank_Advice_"+m+".xlsx");toast("Bank Advice XLSX exported!");
+  }
+}
+function expBankPDF(){
+  const m=_id("bank-m")?.value||gCM();const rows=getRows(m);let tn=0;
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+  doc.setFontSize(14);doc.setFont(undefined,"bold");doc.text(co.name,14,13);
+  doc.setFontSize(8);doc.setFont(undefined,"normal");doc.text((co.addr1||"")+(co.addr2?", "+co.addr2:""),14,19);
+  doc.setFontSize(11);doc.setFont(undefined,"bold");doc.text("BANK ADVICE – SALARY PAYMENT",145,13,{align:"center"});
+  doc.setFontSize(8);doc.setFont(undefined,"normal");doc.text("Salary Month: "+fmtM(m),220,13);doc.text("Date: "+new Date().toLocaleDateString("en-IN"),220,18);
+  doc.setLineWidth(.3);doc.line(14,22,283,22);
+  doc.autoTable({
+    head:[["Sr","Code","Employee Name","Designation","Bank","Account No","IFSC","Net Salary (₹)","Remarks"]],
+    body:rows.map((p,i)=>{const e=gE(p.ec);tn+=p.net;return[i+1,p.ec,e?.name||"",e?.des||"",e?.bnk||co.bank||"",e?.bacc||"",e?.ifsc||"",Math.round(p.net),"Salary "+fmtM(m)]}),
+    startY:25,styles:{fontSize:7,cellPadding:2},headStyles:{fillColor:[30,41,59],textColor:255,fontStyle:"bold"},alternateRowStyles:{fillColor:[248,250,252]},
+    foot:[["","","","","","","","Total: "+Math.round(tn),numToWords(tn)+" Rupees Only"]],
+    footStyles:{fillColor:[30,41,59],textColor:255,fontStyle:"bold"},
+  });
+  const finalY=doc.lastAutoTable.finalY+12;
+  doc.setFontSize(8);
+  doc.text("Prepared By: ___________________",14,finalY);
+  doc.text("Accounts / Finance: ___________________",100,finalY);
+  doc.text("Authorized Signatory: ___________________",200,finalY);
+  doc.save("Bank_Advice_"+m+".pdf");toast("Bank Advice PDF downloaded!");
+}
+function numToWords(n){
+  const a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+  const b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+  n=Math.round(n);if(n===0)return"Zero";if(n<0)return"Minus "+numToWords(-n);
+  if(n<20)return a[n];if(n<100)return b[Math.floor(n/10)]+(n%10?" "+a[n%10]:"");
+  if(n<1000)return a[Math.floor(n/100)]+" Hundred"+(n%100?" "+numToWords(n%100):"");
+  if(n<100000)return numToWords(Math.floor(n/1000))+" Thousand"+(n%1000?" "+numToWords(n%1000):"");
+  if(n<10000000)return numToWords(Math.floor(n/100000))+" Lakh"+(n%100000?" "+numToWords(n%100000):"");
+  return numToWords(Math.floor(n/10000000))+" Crore"+(n%10000000?" "+numToWords(n%10000000):"");
+}
+
+// ── OVERTIME ──
+function rendOT(){
+  const m=_id("ot-m")?.value||gCM();const af=atts.filter(a=>a.m===m&&(a.ot||0)>0);let tot=0;
+  _id("ot-tb").innerHTML=af.length?af.map((a,i)=>{const e=gE(a.ec);const ss=gSS(a.ec);const ba=ss?.ba||0;const gr=ss?gGross(ss):0;const hr=r2(gr/30/8);const or2=(a.otr&&+a.otr>0)?+a.otr:(ss?.otr&&+ss.otr>0?+ss.otr:(ss?otRateCalc(ss):0));const os=r2(or2*(a.ot||0));tot+=os;
+    return`<tr><td>${i+1}</td><td>${a.ec}</td><td>${e?.name||"—"}</td><td class="tr">${fmt(ba)}</td><td class="tr">₹${hr.toFixed(2)}</td><td class="tr">₹${or2.toFixed(2)}</td><td class="tc">${a.ot}</td><td class="tr"><strong>${fmt(os)}</strong></td></tr>`;
+  }).join(""):`<tr><td colspan="8" style="padding:36px;text-align:center;color:var(--tm)">No OT entries for this month.</td></tr>`;
+  _id("ot-tf").innerHTML=af.length?`<tr><td colspan="7">TOTAL OT</td><td>${fmt(tot)}</td></tr>`:"";
+}
+function expOTXL(){const m=_id("ot-m")?.value||gCM();const af=atts.filter(a=>a.m===m&&(a.ot||0)>0);expXL([["#","Code","Name","Basic","Hourly Rate","OT Rate","OT Hours","OT Salary"],...af.map((a,i)=>{const e=gE(a.ec);const ss=gSS(a.ec);const ba=ss?.ba||0;const gr=ss?gGross(ss):0;const hr=r2(gr/30/8),or2=(ss?.otr&&+ss.otr>0?+ss.otr:(ss?otRateCalc(ss):0)),os=r2(or2*(a.ot||0));return[i+1,a.ec,e?.name,ba,hr,or2,a.ot,os]})],"OT_Register_"+m)}
+
+// ── ALERTS ──
+function getAlerts(){
+  const covered=emps.filter(e=>!e.pfEsiExempt);
+  const nu=covered.filter(e=>!e.uan),ne=covered.filter(e=>!e.esic),na=emps.filter(e=>!e.aad),np=emps.filter(e=>!e.pan||e.pan==="NA");
+  const pfe=covered.filter(e=>gSS(e.code));const esie=covered.filter(e=>{const ss=gSS(e.code);return ss&&gGross(ss)<=ESC});
+  const temp=emps.filter(e=>e.pfEsiExempt);
+  return{nu,ne,na,np,pfe,esie,temp};
+}
+function rendAlerts(){
+  const{nu,ne,na,np,pfe,esie,temp}=getAlerts();
+  _id("ac").innerHTML=[
+    {t:`⚠️ Missing UAN (${nu.length})`,cl:"ar",e:nu,info:"Cannot enroll in EPF without UAN"},
+    {t:`⚠️ Missing ESIC Number (${ne.length})`,cl:"ao",e:ne,info:"ESIC number needed for ESI filing"},
+    {t:`⚠️ Missing Aadhaar (${na.length})`,cl:"ao",e:na,info:"Aadhaar required for EPFO KYC"},
+    {t:`⚠️ Missing PAN (${np.length})`,cl:"ao",e:np,info:"PAN required for TDS and Form 16"},
+    {t:`✅ PF Eligible (${pfe.length})`,cl:"ab",e:pfe,info:"Employees with salary structure"},
+    {t:`✅ ESI Eligible (${esie.length})`,cl:"agn",e:esie,info:"Gross ≤ ₹21,000"},
+    {t:`🕒 Temporary – No PF/ESI (${temp.length})`,cl:"ao",e:temp,info:"Excluded from PF/ESI Register & ECR"}
+  ].map(g=>`<div class="ag"><div class="agh ${g.cl}">${g.t}<span style="margin-left:auto;font-size:.72rem;opacity:.85">${g.info}</span></div><div class="agb">${g.e.length?g.e.map(e=>`<span class="aet">${e.code} – ${e.name}</span>`).join(""):'<span style="color:var(--tm);font-size:.78rem">None</span>'}</div></div>`).join("");
+  _id("abadge").textContent=nu.length+ne.length+na.length+np.length;
+}
+
+// ── EXPORTS ──
+function expXL(data,name){
+  if(typeof XLSX==="undefined"){toast("XLSX not loaded","te");return}
+  const ws=XLSX.utils.aoa_to_sheet(data);const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,name.substring(0,31));
+  XLSX.writeFile(wb,name+".xlsx");toast("Exported: "+name+".xlsx");
+}
+function expPDF(title,headers,rows,fname){
+  const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:"landscape",unit:"mm",format:"a4"});
+  doc.setFontSize(12);doc.setFont(undefined,"bold");doc.text(co.name+" – "+title,14,14);
+  doc.setFontSize(7);doc.setFont(undefined,"normal");doc.text("Generated: "+new Date().toLocaleString("en-IN"),14,20);
+  doc.autoTable({head:[headers],body:rows,startY:25,styles:{fontSize:7,cellPadding:2},headStyles:{fillColor:[30,41,59],textColor:255,fontStyle:"bold"},alternateRowStyles:{fillColor:[248,250,252]}});
+  doc.save(fname+".pdf");toast("PDF downloaded!");
+}
+
+// ── INIT ──
+function initApp(){
+  const c=ld("pp_co");if(c)co=Object.assign(co,c);
+  loadCoFields();
+  const th=ld("pp_th")||"light";document.documentElement.setAttribute("data-theme",th);
+  if(th==="dark"){_id("tic").textContent="☀️";_id("tlb").textContent="Light Mode"}
+  _id("co-short").textContent=co.name||"PayrollPro";
+
+  const m=gCM();
+  ["gmo","att-mf","proc-m","ps-m","sr-m","pfr-m","esir-m","ecr-m","bank-m","ot-m"].forEach(id=>setV(id,m));
+  popEmpSel("ps-emp",null);
+  nav("dashboard");
+}
+</script>
+</body>
+</html>
